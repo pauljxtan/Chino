@@ -5,11 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ignore="http://www.galasoft.ch/ignore"
         mc:Ignorable="d ignore"
-        Height="300"
-        Width="300"
-        Title="MVVM Light Application"
-        DataContext="{Binding Main, Source={StaticResource Locator}}">
-    
+        Height="900"
+        Width="1200"
+        Title="Chino"
+        DataContext="{Binding Main, Source={StaticResource Locator}}"
+
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Normal"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        >
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,14 +29,69 @@
     </Window.Resources>
 
     <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="100" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-        <TextBlock FontSize="36"
-                   FontWeight="Bold"
-                   Foreground="Purple"
-                   Text="{Binding WelcomeTitle}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   TextWrapping="Wrap" />
+        <Grid Grid.Row="0" Margin="5,5,5,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
+            <Label Grid.Column="0" Content="Path" />
+            <TextBox Grid.Column="1" Text="{Binding CurrentPath}" />
+            <Button Grid.Column="2" Content="Select folder" Command="{Binding ShowOpenFolderDialogCommand}" />
+            <Button Grid.Column="3" Content="To parent" Command="{Binding GoToParentDirectoryCommand}" />
+            <Button Grid.Column="4" Content="Refresh folder contents" Command="{Binding GetPathContentsCommand}" />
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="5,5,5,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <ListView Grid.Column="0" Height="Auto"
+                              ItemsSource="{Binding CurrentPathDirectories}" SelectedItem="{Binding SelectedDirectory}" />
+            </ScrollViewer>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="CONTENT OF SELECTED FOLDER HERE" />
+                <Button Grid.Row="1" Content="Go to selected folder" Command="{Binding GoToSelectedDirectoryCommand}" />
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="5,5,5,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <ListView Grid.Column="0" Height="Auto"
+                              ItemsSource="{Binding CurrentPathFiles}" SelectedItem="{Binding SelectedFile}" />
+            </ScrollViewer>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="100"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Image Grid.Row="0" Stretch="Uniform" Source="{Binding SelectedFileUri}" />
+                <ListView Grid.Row="1" ItemsSource="{Binding SelectedFileTags}" />
+            </Grid>
+        </Grid>
     </Grid>
 </Window>
