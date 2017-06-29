@@ -18,12 +18,12 @@ namespace Chino.ViewModel
         private SQLiteConnection _dbConnection;
 
         private string _currentPath = "";
-        private string _selectedDirectory = "";
-        private string _selectedFile = "";
+        private DirectoryInfo _selectedDirectory = new DirectoryInfo();
+        private FileInfo _selectedFile = new FileInfo();
         private List<string> _selectedFileTags = new List<string>();
         private Uri _selectedFileUri;
-        private ObservableCollection<string> _currentPathDirectories = new ObservableCollection<string>();
-        private ObservableCollection<string> _currentPathFiles = new ObservableCollection<string>();
+        private ObservableCollection<DirectoryInfo> _currentPathDirectories = new ObservableCollection<DirectoryInfo>();
+        private ObservableCollection<FileInfo> _currentPathFiles = new ObservableCollection<FileInfo>();
 
         public string CurrentPath
         {
@@ -35,20 +35,27 @@ namespace Chino.ViewModel
             }
         }
 
-        public string SelectedDirectory
+        public DirectoryInfo SelectedDirectory
         {
             get { return _selectedDirectory; }
             set { Set(ref _selectedDirectory, value); }
         }
 
-        public string SelectedFile
+        public FileInfo SelectedFile
         {
             get { return _selectedFile; }
             set
             {
                 Set(ref _selectedFile, value);
-                SelectedFileUri = new Uri($"{CurrentPath}\\{SelectedFile}");
-                SelectedFileTags = Image.GetTags(SelectedFile);
+                try
+                {
+                    SelectedFileUri = new Uri($"{CurrentPath}\\{SelectedFile.FileName}");
+                    SelectedFileTags = Image.GetTags(SelectedFile.FileName);
+                }
+                catch (NullReferenceException)
+                {
+                    // TODO: handle
+                }
             }
         }
 
@@ -67,13 +74,13 @@ namespace Chino.ViewModel
             set { Set(ref _selectedFileUri, value); }
         }
 
-        public ObservableCollection<string> CurrentPathDirectories
+        public ObservableCollection<DirectoryInfo> CurrentPathDirectories
         {
             get { return _currentPathDirectories; }
             set { Set(ref _currentPathDirectories, value); }
         }
 
-        public ObservableCollection<string> CurrentPathFiles
+        public ObservableCollection<FileInfo> CurrentPathFiles
         {
             get { return _currentPathFiles; }
             set { Set(ref _currentPathFiles, value); }
@@ -123,10 +130,41 @@ namespace Chino.ViewModel
             if (Directory.Exists(CurrentPath))
             {
                 var regex = new Regex(Config.ImageFileRegex);
-                var fileNames = from file in Directory.EnumerateFiles(CurrentPath) where regex.Match(file).Success select Path.GetFileName(file);
-                var directoryNames = from dir in Directory.EnumerateDirectories(CurrentPath) select dir.Substring(dir.LastIndexOf("\\") + 1);
-                CurrentPathFiles = new ObservableCollection<string>(fileNames);
-                CurrentPathDirectories = new ObservableCollection<string>(directoryNames);
+                //var fileNames = from file in Directory.EnumerateFiles(CurrentPath) where regex.Match(file).Success select Path.GetFileName(file);
+                //var directoryNames = from dir in Directory.EnumerateDirectories(CurrentPath) select dir.Substring(dir.LastIndexOf("\\") + 1);
+
+                var files = new List<FileInfo>();
+                foreach (var file in Directory.EnumerateFiles(CurrentPath))
+                {
+                    if (regex.Match(file).Success)
+                    {
+                        var fileName = Path.GetFileName(file);
+                        files.Add(new FileInfo(fileName));
+                    }
+                }
+                CurrentPathFiles = new ObservableCollection<FileInfo>(files);
+
+                var directories = new List<DirectoryInfo>();
+                // First item in list is parent directory                   
+                var directoryName = "..";
+                var numberOfSubdirs = Directory.EnumerateDirectories(CurrentPath).Count();
+                var numberOfImages = Directory.EnumerateFiles(CurrentPath).Where(f => regex.Match(f).Success).Count();
+                directories.Add(new DirectoryInfo(directoryName, numberOfSubdirs, numberOfImages));
+                foreach (var dir in Directory.EnumerateDirectories(CurrentPath))
+                {
+                    directoryName = dir.Substring(dir.LastIndexOf("\\") + 1);
+                    try
+                    {
+                        numberOfSubdirs = Directory.EnumerateDirectories(dir).Count();
+                        numberOfImages = Directory.EnumerateFiles(dir).Where(f => regex.Match(f).Success).Count();
+                        directories.Add(new DirectoryInfo(directoryName, numberOfSubdirs, numberOfImages));
+                    }
+                    catch
+                    {
+                        // TODO: handle not authorized exception here
+                    }
+                }
+                CurrentPathDirectories = new ObservableCollection<DirectoryInfo>(directories);
             }
             else
             {
@@ -136,12 +174,12 @@ namespace Chino.ViewModel
 
         private void GoToSelectedDirectory()
         {
-            CurrentPath = $"{CurrentPath}\\{SelectedDirectory}";
+            CurrentPath = Path.GetFullPath($"{CurrentPath}\\{SelectedDirectory.DirectoryName}");
         }
 
         private void GoToParentDirectory()
         {
-            CurrentPath = Directory.GetParent(CurrentPath).FullName;
+            CurrentPath = Path.GetFullPath(Directory.GetParent(CurrentPath).FullName);
         }
 
         public void Dispose()
@@ -155,5 +193,38 @@ namespace Chino.ViewModel
 
         ////    base.Cleanup();
         ////}
+
+        public class DirectoryInfo
+        {
+            public string DirectoryName { get; set; }
+            public int NumberOfSubdirs { get; set; }
+            public int NumberOfImages { get; set; }
+
+            public DirectoryInfo()
+            {
+            }
+
+            public DirectoryInfo(string directoryName, int numberOfSubdirs, int numberOfImages)
+            {
+                DirectoryName = directoryName;
+                NumberOfSubdirs = numberOfSubdirs;
+                NumberOfImages = numberOfImages;
+            }
+        }
+
+        public class FileInfo
+        {
+            public string FileName { get; set; }
+            //public int FileSize { get; set; }
+
+            public FileInfo()
+            {
+            }
+
+            public FileInfo(string fileName)
+            {
+                FileName = fileName;
+            }
+        }
     }
 }

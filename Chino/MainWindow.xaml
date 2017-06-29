@@ -13,7 +13,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Normal"
-        TextElement.FontSize="14"
+        TextElement.FontSize="16"
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -24,72 +24,145 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Skins/MainSkin.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+    <materialDesign:DialogHost Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+        <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+            <materialDesign:DrawerHost.LeftDrawerContent>
+                <DockPanel MinWidth="212">
+                    <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                                    DockPanel.Dock="Top"
+                                    HorizontalAlignment="Right" Margin="16"
+                                    IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
+                    <ListBox x:Name="DemoItemsListBox" Margin="0 16 0 16" SelectedIndex="0"                         
+                             ItemsSource="{Binding DemoItems}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="domain:DemoItem">
+                                <TextBlock Text="{Binding Name}" Margin="32 0 32 0" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </materialDesign:DrawerHost.LeftDrawerContent>
+            <DockPanel>
+                <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                            Mode="PrimaryMid" DockPanel.Dock="Top">
+                    <DockPanel>
+                        <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False"
+                                        x:Name="MenuToggleButton"/>
+                        <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                            <StackPanel>
+                                <Button Content="Can't Touch This" IsEnabled="False" />
+                                <Separator/>
+                            </StackPanel>
+                        </materialDesign:PopupBox>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22">Chino</TextBlock>
+                    </DockPanel>
+                </materialDesign:ColorZone>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="1" x:Name="LayoutRoot">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
-    <Grid x:Name="LayoutRoot">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" MinHeight="100" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Margin="5,5,5,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="0" Margin="5,5,5,5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Margin="5,5,5,5" Command="{Binding ShowOpenFolderDialogCommand}">
+                                <materialDesign:PackIcon Kind="Folder" />
+                            </Button>
+                            <TextBox Grid.Column="1" Margin="5,5,5,5" Text="{Binding CurrentPath}" />
+                            <Button Grid.Column="2" Margin="5,5,5,5" Command="{Binding GetPathContentsCommand}">
+                                <materialDesign:PackIcon Kind="Refresh" />
+                            </Button>
+                        </Grid>
 
-            <TextBox Grid.Column="0" Margin="5,5,5,5" Text="{Binding CurrentPath}" />
-            <Button Grid.Column="1" Margin="5,5,5,5" Content="Select folder" Command="{Binding ShowOpenFolderDialogCommand}" />
-            <Button Grid.Column="2" Margin="5,5,5,5" Content="To parent" Command="{Binding GoToParentDirectoryCommand}" />
-            <Button Grid.Column="3" Margin="5,5,5,5" Content="Refresh folder contents" Command="{Binding GetPathContentsCommand}" />
-        </Grid>
+                        <Grid Grid.Row="1" Margin="5,5,5,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="1" Margin="5,5,5,5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0">
+                                <Border Margin="5,5,5,5" BorderBrush="Purple" BorderThickness="1">
+                                    <ScrollViewer Margin="5,5,5,5" 
+                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                        <DataGrid Margin="5,5,5,5" AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
+                                                  ItemsSource="{Binding CurrentPathDirectories}" SelectedItem="{Binding SelectedDirectory}">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Folder" Binding="{Binding DirectoryName}" MinWidth="280" />
+                                                <DataGridTextColumn Header="# Subfolders" Binding="{Binding NumberOfSubdirs}" />
+                                                <DataGridTextColumn Header="# Images" Binding="{Binding NumberOfImages}" />
+                                                <DataGridTemplateColumn>
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel>
+                                                                <Button Height="20"
+                                                                        Command="{Binding Path=DataContext.GoToSelectedDirectoryCommand,
+                                                                                  RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGrid}}}">
+                                                                    <materialDesign:PackIcon Kind="ArrowRight" Height="13" Margin="0,-1,0,0" />
+                                                                </Button>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </ScrollViewer>
+                                </Border>
+                            </Grid>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <ListView Grid.Column="0" Height="Auto" Margin="5,5,5,5"
-                              ItemsSource="{Binding CurrentPathDirectories}" SelectedItem="{Binding SelectedDirectory}" />
-            </ScrollViewer>
+                            <Grid Grid.Column="1">
+                                <Border Margin="5,5,5,5" BorderBrush="Purple" BorderThickness="1">
+                                    <ScrollViewer Margin="5,5,5,5"
+                              HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                        <DataGrid Margin="5,5,5,5" AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
+                                                  ItemsSource="{Binding CurrentPathFiles}" SelectedItem="{Binding SelectedFile}">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="File" Binding="{Binding FileName}" MinWidth="280" />
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </ScrollViewer>
+                                </Border>
+                            </Grid>
+                        </Grid>
 
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Margin="5,5,5,5" Text="CONTENT OF SELECTED FOLDER HERE" />
-                <Button Grid.Row="1" Margin="5,5,5,5" Content="Go to selected folder" Command="{Binding GoToSelectedDirectoryCommand}" />
-            </Grid>
-        </Grid>
+                        <Grid Grid.Row="2" Margin="5,5,5,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="2" Margin="5,5,5,5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0">
+                                <ListView Margin="5,5,5,5" ItemsSource="{Binding SelectedFileTags}" />
+                            </Grid>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <ListView Grid.Column="0" Height="Auto" Margin="5,5,5,5"
-                              ItemsSource="{Binding CurrentPathFiles}" SelectedItem="{Binding SelectedFile}" />
-            </ScrollViewer>
+                            <Grid Grid.Column="1">
+                                <Image Grid.Row="0" Margin="5,5,5,5" Stretch="Uniform" Source="{Binding SelectedFileUri}" />
+                            </Grid>
+                        </Grid>
+                    </Grid>
 
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="100"></RowDefinition>
-                </Grid.RowDefinitions>
+                    <materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}" x:Name="MainSnackbar"
+                                            Grid.Row="1" />
+                </Grid>
+            </DockPanel>
+        </materialDesign:DrawerHost>
+    </materialDesign:DialogHost>
 
-                <Image Grid.Row="0" Margin="5,5,5,5" Stretch="Uniform" Source="{Binding SelectedFileUri}" />
-                <ListView Grid.Row="1" Margin="5,5,5,5" ItemsSource="{Binding SelectedFileTags}" />
-            </Grid>
-        </Grid>
-    </Grid>
+
 </Window>
