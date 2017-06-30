@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ignore="http://www.galasoft.ch/ignore"
         mc:Ignorable="d ignore"
-        Height="900"
-        Width="1200"
+        MinHeight="700"
+        MinWidth="1300"
+        Height="700"
+        Width="1300"
         Title="Chino"
         DataContext="{Binding Main, Source={StaticResource Locator}}"
 
@@ -64,48 +66,106 @@
                     </DockPanel>
                 </materialDesign:ColorZone>
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="1" x:Name="LayoutRoot">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Border BorderBrush="Purple" BorderThickness="0">
+                            <Grid Margin="0,5,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" FontSize="24" Margin="0,5,0,5"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center">Tags</TextBlock>
+                                <WrapPanel Grid.Row="1" HorizontalAlignment="Center">
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">a</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">b</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">c</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">d</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">e</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">f</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">g</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">h</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">i</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">j</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">k</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">l</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">m</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">n</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">o</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">p</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">q</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">r</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">s</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">t</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">u</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">v</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">w</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">x</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">y</Button>
+                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">z</Button>
+                                </WrapPanel>
+                                <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
+                                                  ItemsSource="{Binding AvailableTags}">
+                                        <DataGrid.Columns>
+                                                <DataGridTemplateColumn>
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel>
+                                                            <materialDesign:Chip Content="{Binding TagName}" Icon="{Binding NumberOfImages}" />
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0" Margin="5,5,5,5">
+                        <Grid Grid.Row="0" Margin="0,5,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Column="0" Margin="5,5,5,5" Command="{Binding ShowOpenFolderDialogCommand}">
+                            <Button Grid.Column="0" Command="{Binding ShowOpenFolderDialogCommand}">
                                 <materialDesign:PackIcon Kind="Folder" />
                             </Button>
-                            <TextBox Grid.Column="1" Margin="5,5,5,5" Text="{Binding CurrentPath}" />
-                            <Button Grid.Column="2" Margin="5,5,5,5" Command="{Binding GetPathContentsCommand}">
+                            <TextBox Grid.Column="1" Margin="5,0,5,0" Text="{Binding CurrentPath}" />
+                            <Button Grid.Column="2" Command="{Binding GetPathContentsCommand}">
                                 <materialDesign:PackIcon Kind="Refresh" />
                             </Button>
                         </Grid>
 
-                        <Grid Grid.Row="1" Margin="5,5,5,5">
+                        <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
                             <Grid Grid.Column="0">
-                                <Border Margin="5,5,5,5" BorderBrush="Purple" BorderThickness="1">
-                                    <ScrollViewer Margin="5,5,5,5" 
-                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                        <DataGrid Margin="5,5,5,5" AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
+                                <Border BorderBrush="Purple" BorderThickness="0">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                        <DataGrid AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
                                                   ItemsSource="{Binding CurrentPathDirectories}" SelectedItem="{Binding SelectedDirectory}">
                                             <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Folder" Binding="{Binding DirectoryName}" MinWidth="280" />
-                                                <DataGridTextColumn Header="# Subfolders" Binding="{Binding NumberOfSubdirs}" />
+                                                <DataGridTextColumn Header="Folder" Binding="{Binding DirectoryName}" MinWidth="180" />
+                                                <DataGridTextColumn Header="# Folders" Binding="{Binding NumberOfSubdirs}" />
                                                 <DataGridTextColumn Header="# Images" Binding="{Binding NumberOfImages}" />
                                                 <DataGridTemplateColumn>
                                                     <DataGridTemplateColumn.CellTemplate>
@@ -127,13 +187,12 @@
                             </Grid>
 
                             <Grid Grid.Column="1">
-                                <Border Margin="5,5,5,5" BorderBrush="Purple" BorderThickness="1">
-                                    <ScrollViewer Margin="5,5,5,5"
-                              HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                        <DataGrid Margin="5,5,5,5" AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
+                                <Border BorderBrush="Purple" BorderThickness="0">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                        <DataGrid AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
                                                   ItemsSource="{Binding CurrentPathFiles}" SelectedItem="{Binding SelectedFile}">
                                             <DataGrid.Columns>
-                                                <DataGridTextColumn Header="File" Binding="{Binding FileName}" MinWidth="280" />
+                                                <DataGridTextColumn Header="File" Binding="{Binding FileName}"  />
                                             </DataGrid.Columns>
                                         </DataGrid>
                                     </ScrollViewer>
@@ -141,18 +200,18 @@
                             </Grid>
                         </Grid>
 
-                        <Grid Grid.Row="2" Margin="5,5,5,5">
+                        <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
                             <Grid Grid.Column="0">
-                                <ListView Margin="5,5,5,5" ItemsSource="{Binding SelectedFileTags}" />
+                                <ListView ItemsSource="{Binding SelectedFileTags}" />
                             </Grid>
 
                             <Grid Grid.Column="1">
-                                <Image Grid.Row="0" Margin="5,5,5,5" Stretch="Uniform" Source="{Binding SelectedFileUri}" />
+                                <Image Grid.Row="0" Stretch="Uniform" Source="{Binding SelectedFileUri}" />
                             </Grid>
                         </Grid>
                     </Grid>

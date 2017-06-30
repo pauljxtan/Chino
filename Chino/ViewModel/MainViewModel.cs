@@ -24,6 +24,8 @@ namespace Chino.ViewModel
         private Uri _selectedFileUri;
         private ObservableCollection<DirectoryInfo> _currentPathDirectories = new ObservableCollection<DirectoryInfo>();
         private ObservableCollection<FileInfo> _currentPathFiles = new ObservableCollection<FileInfo>();
+        private ObservableCollection<TagInfo> _availableTags = new ObservableCollection<TagInfo>();
+        private string _selectedTagFilter;
 
         public string CurrentPath
         {
@@ -86,6 +88,22 @@ namespace Chino.ViewModel
             set { Set(ref _currentPathFiles, value); }
         }
 
+        public ObservableCollection<TagInfo> AvailableTags
+        {
+            get { return _availableTags; }
+            set { Set(ref _availableTags, value); }
+        }
+
+        public string SelectedTagFilter
+        {
+            get { return _selectedTagFilter; }
+            set
+            {
+                Set(ref _selectedTagFilter, value);
+                ReloadAvailableTags();
+            }
+        }
+
         public MainViewModel(IDataService dataService)
         {
             if (!File.Exists(Config.DatabasePath))
@@ -98,6 +116,8 @@ namespace Chino.ViewModel
             GetPathContentsCommand = new RelayCommand(GetPathContents);
             GoToSelectedDirectoryCommand = new RelayCommand(GoToSelectedDirectory);
             GoToParentDirectoryCommand = new RelayCommand(GoToParentDirectory);
+
+            SelectedTagFilter = "a";
 
             // Default folder, for testing only
             CurrentPath = @"C:\Users\pjxta\Pictures\_pics";
@@ -182,6 +202,11 @@ namespace Chino.ViewModel
             CurrentPath = Path.GetFullPath(Directory.GetParent(CurrentPath).FullName);
         }
 
+        private void ReloadAvailableTags()
+        {
+            AvailableTags = new ObservableCollection<TagInfo>(Tag.TagList.FindAll(t => t.Name.StartsWith(SelectedTagFilter)).Select(t => new TagInfo(t.Name, 123)));
+        }
+
         public void Dispose()
         {
             _dbConnection.Close();
@@ -224,6 +249,22 @@ namespace Chino.ViewModel
             public FileInfo(string fileName)
             {
                 FileName = fileName;
+            }
+        }
+
+        public class TagInfo
+        {
+            public string TagName { get; set; }
+            public int NumberOfImages { get; set; }
+
+            public TagInfo()
+            {
+            }
+
+            public TagInfo(string tagName, int numberOfImages)
+            {
+                TagName = tagName;
+                NumberOfImages = numberOfImages;
             }
         }
     }
