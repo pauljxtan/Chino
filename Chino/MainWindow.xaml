@@ -166,10 +166,26 @@
                                             </Grid.ColumnDefinitions>
 
                                             <Grid Grid.Column="0">
-                                                <ListView x:Name="FileTagList" ItemsSource="{Binding SelectedFileTags}"
-                                                  DragEnter="FileTagList_DragEnter"
-                                                  Drop="FileTagList_Drop"
-                                                  AllowDrop="True" />
+                                                <DataGrid x:Name="fileTagDataGrid" AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
+                                                  ItemsSource="{Binding SelectedFileTags}"
+                                                  DragEnter="fileTagDataGrid_DragEnter"
+                                                  Drop="fileTagDataGrid_Drop"
+                                                  AllowDrop="True">
+                                                    <DataGrid.Columns>
+                                                        <DataGridTemplateColumn>
+                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel>
+                                                                        <materialDesign:Chip x:Name="tagChip"
+                                                                                         PreviewMouseLeftButtonDown="tagChip_PreviewMouseLeftButtonDown"
+                                                                                         PreviewMouseMove="tagChip_MouseMove" 
+                                                                                         Content="{Binding TagName}" Icon="{Binding NumberOfImages}" />
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </DataGridTemplateColumn.CellTemplate>
+                                                        </DataGridTemplateColumn>
+                                                    </DataGrid.Columns>
+                                                </DataGrid>
                                             </Grid>
 
                                             <Grid Grid.Column="1">
@@ -203,6 +219,15 @@
         </TabItem>
 
         <TabItem Header="Galleries">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
+        </TabItem>
+        <TabItem Header="Database">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
+        </TabItem>
+        <TabItem Header="Logs">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
+        </TabItem>
+        <TabItem Header="Fun Stuff">
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
         </TabItem>
     </dragablz:TabablzControl>

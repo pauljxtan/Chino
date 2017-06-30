@@ -23,11 +23,6 @@ namespace Chino
             Closing += (s, e) => ViewModelLocator.Cleanup();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void OnTagFilterClick(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
@@ -59,7 +54,7 @@ namespace Chino
             }
         }
 
-        private void FileTagList_DragEnter(object sender, DragEventArgs e)
+        private void fileTagDataGrid_DragEnter(object sender, DragEventArgs e)
         {
             var viewModel = DataContext as MainViewModel;
             if (!e.Data.GetDataPresent(DataFormats.StringFormat) || sender == e.Source || viewModel.SelectedFile == null)
@@ -69,18 +64,22 @@ namespace Chino
             }
         }
 
-        private void FileTagList_Drop(object sender, DragEventArgs e)
+        private void fileTagDataGrid_Drop(object sender, DragEventArgs e)
         {
+            // TODO: we need to package the number of tags along with the tag name to pass into the viewmodel
             var newTag = e.Data.GetData(DataFormats.StringFormat).ToString();
             var viewModel = DataContext as MainViewModel;
             // Only add the tag if a file is actually selected
             if (viewModel.SelectedFile != null)
             {
-                viewModel.SelectedFileTags.Add(newTag);
+                // TODO: number needs to be re-calculated (incremented by 1) - do this in the viewmodel
+                // TODO: don't add if already existing
+                viewModel.SelectedFileTags.Add(new MainViewModel.TagInfo(newTag, 123));
                 viewModel.UpdateFileTagsInDb();
             }
         }
 
+        // Enable DataGrid scrolling outside of scrollbar
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             var scrollViewer = sender as ScrollViewer;

@@ -108,6 +108,8 @@
     <Compile Include="Database\ChinoDbHelper.cs" />
     <Compile Include="Database\SqliteHelper.cs" />
     <Compile Include="Design\DesignDataService.cs" />
+    <Compile Include="Model\ChinoRepository.cs" />
+    <Compile Include="Model\Log.cs" />
     <Compile Include="Model\Tag.cs" />
     <Compile Include="Model\Image.cs" />
     <Compile Include="Model\DataItem.cs" />

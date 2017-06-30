@@ -20,7 +20,7 @@ namespace Chino.ViewModel
         private string _currentPath = "";
         private DirectoryInfo _selectedDirectory = null;
         private FileInfo _selectedFile = null;
-        private ObservableCollection<string> _selectedFileTags = new ObservableCollection<string>();
+        private ObservableCollection<TagInfo> _selectedFileTags = new ObservableCollection<TagInfo>();
         private Uri _selectedFileUri;
         private ObservableCollection<DirectoryInfo> _currentPathDirectories = new ObservableCollection<DirectoryInfo>();
         private ObservableCollection<FileInfo> _currentPathFiles = new ObservableCollection<FileInfo>();
@@ -59,7 +59,14 @@ namespace Chino.ViewModel
                 try
                 {
                     SelectedFileUri = new Uri($"{CurrentPath}\\{SelectedFile.FileName}");
-                    SelectedFileTags = new ObservableCollection<string>(Image.GetTags(SelectedFile.FileName));
+                    List<Tag> tags = ChinoRepository.GetTagsByImage(SelectedFile.FileName);
+                    var tagInfos = new List<TagInfo>();
+                    foreach (var tag in tags)
+                    {
+                        // Hardcoded number for now, calculate this later
+                        tagInfos.Add(new TagInfo(tag.Name, 123));
+                    }
+                    SelectedFileTags = new ObservableCollection<TagInfo>(tagInfos);
                 }
                 catch (NullReferenceException)
                 {
@@ -68,7 +75,7 @@ namespace Chino.ViewModel
             }
         }
 
-        public ObservableCollection<string> SelectedFileTags
+        public ObservableCollection<TagInfo> SelectedFileTags
         {
             get { return _selectedFileTags; }
             set
@@ -135,7 +142,33 @@ namespace Chino.ViewModel
         public RelayCommand GoToSelectedDirectoryCommand { get; }
         public RelayCommand GoToParentDirectoryCommand { get; }
 
-        public void ShowOpenFolderDialog()
+        public void UpdateFileTagsInDb()
+        {
+            if (SelectedFile == null) return;
+            var previousTags = ChinoRepository.GetTagsByImage(SelectedFile.FileName).Select(t => t.Name);
+            var currentTags = SelectedFileTags.Select(ti => ti.TagName);
+
+            // Any tags in previous but not current should be deleted from the database
+            foreach (var tag in previousTags)
+            {
+                if (!currentTags.Contains(tag))
+                {
+                    // TODO: Log this
+                    ChinoRepository.RemoveTag(SelectedFile.FileName, tag);
+                }
+            }
+            // Any tags in current but not previous should be added to the database
+            foreach (var tag in currentTags)
+            {
+                if (!previousTags.Contains(tag))
+                {
+                    // TODO: Log this
+                    ChinoRepository.AddImageTagRelation(SelectedFile.FileName, tag);
+                }
+            }
+        }
+
+        private void ShowOpenFolderDialog()
         {
             var openFolderDialog = new CommonOpenFileDialog()
             {
@@ -150,6 +183,11 @@ namespace Chino.ViewModel
             {
                 CurrentPath = openFolderDialog.FileName;
             }
+        }
+
+        public void Dispose()
+        {
+            _dbConnection.Close();
         }
 
         private void GetPathContents()
@@ -211,46 +249,10 @@ namespace Chino.ViewModel
 
         private void ReloadAvailableTags()
         {
-            AvailableTags = new ObservableCollection<TagInfo>(Tag.TagList.FindAll(t => t.Name.StartsWith(SelectedTagFilter)).Select(t => new TagInfo(t.Name, 123)));
+            AvailableTags = new ObservableCollection<TagInfo>(ChinoRepository.GetAllTags()
+                .Where(t => t.Name.StartsWith(SelectedTagFilter))
+                .Select(t => new TagInfo(t.Name, 123)));
         }
-
-        public void UpdateFileTagsInDb()
-        {
-            if (SelectedFile == null) return;
-            var previousTags = Image.GetTags(SelectedFile.FileName);
-            var currentTags = SelectedFileTags;
-
-            // Any tags in previous but not current should be deleted from the database
-            foreach (var tag in previousTags)
-            {
-                if (!currentTags.Contains(tag))
-                {
-                    // TODO: Log this
-                    Image.RemoveTag(SelectedFile.FileName, tag);
-                }
-            }
-            // Any tags in current but not previous should be added to the database
-            foreach (var tag in currentTags)
-            {
-                if (!previousTags.Contains(tag))
-                {
-                    // TODO: Log this
-                    Image.AddTag(SelectedFile.FileName, tag);
-                }
-            }
-        }
-
-        public void Dispose()
-        {
-            _dbConnection.Close();
-        }
-
-        ////public override void Cleanup()
-        ////{
-        ////    // Clean up if needed
-
-        ////    base.Cleanup();
-        ////}
 
         public class DirectoryInfo
         {
