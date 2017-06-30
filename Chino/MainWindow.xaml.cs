@@ -58,5 +58,20 @@ namespace Chino
                 DragDrop.DoDragDrop(tagChip, dragData, DragDropEffects.Copy);
             }
         }
+
+        private void FileTagList_DragEnter(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.StringFormat) || sender == e.Source)
+            {
+                e.Effects = DragDropEffects.None;
+            }
+        }
+
+        private void FileTagList_Drop(object sender, DragEventArgs e)
+        {
+            var newTag = e.Data.GetData(DataFormats.StringFormat).ToString();
+            var viewModel = (MainViewModel)this.DataContext;
+            viewModel.SelectedFileTags.Add(newTag);
+        }
     }
 }

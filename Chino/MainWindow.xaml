@@ -188,7 +188,10 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Grid Grid.Column="0">
-                                        <ListView ItemsSource="{Binding SelectedFileTags}" />
+                                        <ListView x:Name="FileTagList" ItemsSource="{Binding SelectedFileTags}"
+                                                  DragEnter="FileTagList_DragEnter"
+                                                  Drop="FileTagList_Drop"
+                                                  AllowDrop="True" />
                                     </Grid>
 
                                     <Grid Grid.Column="1">

@@ -20,7 +20,7 @@ namespace Chino.ViewModel
         private string _currentPath = "";
         private DirectoryInfo _selectedDirectory = new DirectoryInfo();
         private FileInfo _selectedFile = new FileInfo();
-        private List<string> _selectedFileTags = new List<string>();
+        private ObservableCollection<string> _selectedFileTags = new ObservableCollection<string>();
         private Uri _selectedFileUri;
         private ObservableCollection<DirectoryInfo> _currentPathDirectories = new ObservableCollection<DirectoryInfo>();
         private ObservableCollection<FileInfo> _currentPathFiles = new ObservableCollection<FileInfo>();
@@ -52,7 +52,7 @@ namespace Chino.ViewModel
                 try
                 {
                     SelectedFileUri = new Uri($"{CurrentPath}\\{SelectedFile.FileName}");
-                    SelectedFileTags = Image.GetTags(SelectedFile.FileName);
+                    SelectedFileTags = new ObservableCollection<string>(Image.GetTags(SelectedFile.FileName));
                 }
                 catch (NullReferenceException)
                 {
@@ -61,7 +61,7 @@ namespace Chino.ViewModel
             }
         }
 
-        public List<string> SelectedFileTags
+        public ObservableCollection<string> SelectedFileTags
         {
             get { return _selectedFileTags; }
             set
