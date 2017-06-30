@@ -33,7 +33,7 @@ namespace Chino
             Button button = sender as Button;
             if (button == null) return;
 
-            var viewModel = (MainViewModel)this.DataContext;
+            var viewModel = DataContext as MainViewModel;
             viewModel.SelectedTagFilter = button.Content.ToString();
         }
 
@@ -61,8 +61,10 @@ namespace Chino
 
         private void FileTagList_DragEnter(object sender, DragEventArgs e)
         {
-            if (!e.Data.GetDataPresent(DataFormats.StringFormat) || sender == e.Source)
+            var viewModel = DataContext as MainViewModel;
+            if (!e.Data.GetDataPresent(DataFormats.StringFormat) || sender == e.Source || viewModel.SelectedFile == null)
             {
+                // TODO: this doesn't seem to be actually working...
                 e.Effects = DragDropEffects.None;
             }
         }
@@ -70,8 +72,20 @@ namespace Chino
         private void FileTagList_Drop(object sender, DragEventArgs e)
         {
             var newTag = e.Data.GetData(DataFormats.StringFormat).ToString();
-            var viewModel = (MainViewModel)this.DataContext;
-            viewModel.SelectedFileTags.Add(newTag);
+            var viewModel = DataContext as MainViewModel;
+            // Only add the tag if a file is actually selected
+            if (viewModel.SelectedFile != null)
+            {
+                viewModel.SelectedFileTags.Add(newTag);
+                viewModel.UpdateFileTagsInDb();
+            }
+        }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var scrollViewer = sender as ScrollViewer;
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.Delta);
+            e.Handled = true;
         }
     }
 }

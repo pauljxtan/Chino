@@ -18,8 +18,8 @@ namespace Chino.ViewModel
         private SQLiteConnection _dbConnection;
 
         private string _currentPath = "";
-        private DirectoryInfo _selectedDirectory = new DirectoryInfo();
-        private FileInfo _selectedFile = new FileInfo();
+        private DirectoryInfo _selectedDirectory = null;
+        private FileInfo _selectedFile = null;
         private ObservableCollection<string> _selectedFileTags = new ObservableCollection<string>();
         private Uri _selectedFileUri;
         private ObservableCollection<DirectoryInfo> _currentPathDirectories = new ObservableCollection<DirectoryInfo>();
@@ -40,7 +40,14 @@ namespace Chino.ViewModel
         public DirectoryInfo SelectedDirectory
         {
             get { return _selectedDirectory; }
-            set { Set(ref _selectedDirectory, value); }
+            set
+            {
+                Set(ref _selectedDirectory, value);
+                if (_selectedDirectory != null)
+                {
+                    GoToSelectedDirectory();
+                }
+            }
         }
 
         public FileInfo SelectedFile
@@ -205,6 +212,32 @@ namespace Chino.ViewModel
         private void ReloadAvailableTags()
         {
             AvailableTags = new ObservableCollection<TagInfo>(Tag.TagList.FindAll(t => t.Name.StartsWith(SelectedTagFilter)).Select(t => new TagInfo(t.Name, 123)));
+        }
+
+        public void UpdateFileTagsInDb()
+        {
+            if (SelectedFile == null) return;
+            var previousTags = Image.GetTags(SelectedFile.FileName);
+            var currentTags = SelectedFileTags;
+
+            // Any tags in previous but not current should be deleted from the database
+            foreach (var tag in previousTags)
+            {
+                if (!currentTags.Contains(tag))
+                {
+                    // TODO: Log this
+                    Image.RemoveTag(SelectedFile.FileName, tag);
+                }
+            }
+            // Any tags in current but not previous should be added to the database
+            foreach (var tag in currentTags)
+            {
+                if (!previousTags.Contains(tag))
+                {
+                    // TODO: Log this
+                    Image.AddTag(SelectedFile.FileName, tag);
+                }
+            }
         }
 
         public void Dispose()
