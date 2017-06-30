@@ -20,6 +20,8 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
+        
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
         >
 
     <Window.Resources>
@@ -32,196 +34,177 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <materialDesign:DialogHost Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
-        <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
-            <materialDesign:DrawerHost.LeftDrawerContent>
-                <DockPanel MinWidth="212">
-                    <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
-                                    DockPanel.Dock="Top"
-                                    HorizontalAlignment="Right" Margin="16"
-                                    IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
-                    <ListBox x:Name="DemoItemsListBox" Margin="0 16 0 16" SelectedIndex="0"                         
-                             ItemsSource="{Binding DemoItems}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate DataType="domain:DemoItem">
-                                <TextBlock Text="{Binding Name}" Margin="32 0 32 0" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </DockPanel>
-            </materialDesign:DrawerHost.LeftDrawerContent>
-            <DockPanel>
-                <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2"
-                                            Mode="PrimaryMid" DockPanel.Dock="Top">
-                    <DockPanel>
-                        <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False"
-                                        x:Name="MenuToggleButton"/>
-                        <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
-                            <StackPanel>
-                                <Button Content="Can't Touch This" IsEnabled="False" />
-                                <Separator/>
-                            </StackPanel>
-                        </materialDesign:PopupBox>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22">Chino</TextBlock>
-                    </DockPanel>
-                </materialDesign:ColorZone>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Column="0">
-                        <Border BorderBrush="Purple" BorderThickness="0">
-                            <Grid Margin="0,5,0,0">
+    <dragablz:TabablzControl>
+        <dragablz:TabablzControl.InterTabController>
+            <dragablz:InterTabController />
+        </dragablz:TabablzControl.InterTabController>
+        <TabItem Header="Tagging">
+            <materialDesign:DialogHost Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+                <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="250" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0">
+                                <Border BorderBrush="Purple" BorderThickness="0">
+                                    <Grid Margin="0,5,0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryDark" FontSize="24" Margin="0,5,0,10">
+                                            <TextBlock HorizontalAlignment="Center" Margin="0,5,0,5">Tags</TextBlock>
+                                        </materialDesign:ColorZone>
+                                        <WrapPanel Grid.Row="1" HorizontalAlignment="Center">
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">a</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">b</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">c</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">d</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">e</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">f</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">g</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">h</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">i</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">j</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">k</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">l</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">m</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">n</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">o</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">p</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">q</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">r</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">s</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">t</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">u</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">v</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">w</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">x</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">y</Button>
+                                            <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">z</Button>
+                                        </WrapPanel>
+                                        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                            <DataGrid Margin="0,-20,0,0" AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
+                                                  ItemsSource="{Binding AvailableTags}">
+                                                <DataGrid.Columns>
+                                                    <DataGridTemplateColumn>
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel>
+                                                                    <materialDesign:Chip x:Name="tagChip"
+                                                                                         PreviewMouseLeftButtonDown="tagChip_PreviewMouseLeftButtonDown"
+                                                                                         PreviewMouseMove="tagChip_MouseMove" 
+                                                                                         Content="{Binding TagName}" Icon="{Binding NumberOfImages}" />
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+
+                            <Grid Grid.Column="1" Margin="5,0,0,0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" FontSize="24" Margin="0,5,0,5"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center">Tags</TextBlock>
-                                <WrapPanel Grid.Row="1" HorizontalAlignment="Center">
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">a</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">b</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">c</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">d</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">e</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">f</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">g</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">h</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">i</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">j</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">k</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">l</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">m</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">n</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">o</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">p</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">q</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">r</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">s</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">t</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">u</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">v</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">w</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">x</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">y</Button>
-                                    <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">z</Button>
-                                </WrapPanel>
-                                <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
-                                                  ItemsSource="{Binding AvailableTags}">
-                                        <DataGrid.Columns>
-                                                <DataGridTemplateColumn>
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel>
-                                                            <materialDesign:Chip Content="{Binding TagName}" Icon="{Binding NumberOfImages}" />
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                </ScrollViewer>
-                            </Grid>
-                        </Border>
-                    </Grid>
 
-                    <Grid Grid.Column="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+                                <Grid Grid.Row="0" Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                        <Grid Grid.Row="0" Margin="0,5,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Command="{Binding ShowOpenFolderDialogCommand}">
+                                        <materialDesign:PackIcon Kind="Folder" />
+                                    </Button>
+                                    <TextBox Grid.Column="1" Margin="5,0,5,0" Text="{Binding CurrentPath}" />
+                                    <Button Grid.Column="2" Command="{Binding GetPathContentsCommand}">
+                                        <materialDesign:PackIcon Kind="Refresh" />
+                                    </Button>
+                                </Grid>
 
-                            <Button Grid.Column="0" Command="{Binding ShowOpenFolderDialogCommand}">
-                                <materialDesign:PackIcon Kind="Folder" />
-                            </Button>
-                            <TextBox Grid.Column="1" Margin="5,0,5,0" Text="{Binding CurrentPath}" />
-                            <Button Grid.Column="2" Command="{Binding GetPathContentsCommand}">
-                                <materialDesign:PackIcon Kind="Refresh" />
-                            </Button>
-                        </Grid>
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                        <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Grid Grid.Column="0">
-                                <Border BorderBrush="Purple" BorderThickness="0">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                        <DataGrid AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
+                                    <Grid Grid.Column="0">
+                                        <Border BorderBrush="Purple" BorderThickness="0">
+                                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                                <DataGrid AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
                                                   ItemsSource="{Binding CurrentPathDirectories}" SelectedItem="{Binding SelectedDirectory}">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Folder" Binding="{Binding DirectoryName}" MinWidth="180" />
-                                                <DataGridTextColumn Header="# Folders" Binding="{Binding NumberOfSubdirs}" />
-                                                <DataGridTextColumn Header="# Images" Binding="{Binding NumberOfImages}" />
-                                                <DataGridTemplateColumn>
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel>
-                                                                <Button Height="20"
+                                                    <DataGrid.Columns>
+                                                        <DataGridTextColumn Header="Folder" Binding="{Binding DirectoryName}" MinWidth="180" />
+                                                        <DataGridTextColumn Header="# Folders" Binding="{Binding NumberOfSubdirs}" />
+                                                        <DataGridTextColumn Header="# Images" Binding="{Binding NumberOfImages}" />
+                                                        <DataGridTemplateColumn>
+                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel>
+                                                                        <Button Height="20"
                                                                         Command="{Binding Path=DataContext.GoToSelectedDirectoryCommand,
                                                                                   RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGrid}}}">
-                                                                    <materialDesign:PackIcon Kind="ArrowRight" Height="13" Margin="0,-1,0,0" />
-                                                                </Button>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                            </DataGrid.Columns>
-                                        </DataGrid>
-                                    </ScrollViewer>
-                                </Border>
-                            </Grid>
+                                                                            <materialDesign:PackIcon Kind="ArrowRight" Height="13" Margin="0,-1,0,0" />
+                                                                        </Button>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </DataGridTemplateColumn.CellTemplate>
+                                                        </DataGridTemplateColumn>
+                                                    </DataGrid.Columns>
+                                                </DataGrid>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </Grid>
 
-                            <Grid Grid.Column="1">
-                                <Border BorderBrush="Purple" BorderThickness="0">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                        <DataGrid AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
+                                    <Grid Grid.Column="1">
+                                        <Border BorderBrush="Purple" BorderThickness="0">
+                                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                                <DataGrid AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
                                                   ItemsSource="{Binding CurrentPathFiles}" SelectedItem="{Binding SelectedFile}">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="File" Binding="{Binding FileName}"  />
-                                            </DataGrid.Columns>
-                                        </DataGrid>
-                                    </ScrollViewer>
-                                </Border>
+                                                    <DataGrid.Columns>
+                                                        <DataGridTextColumn Header="File" Binding="{Binding FileName}"  />
+                                                    </DataGrid.Columns>
+                                                </DataGrid>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid Grid.Column="0">
+                                        <ListView ItemsSource="{Binding SelectedFileTags}" />
+                                    </Grid>
+
+                                    <Grid Grid.Column="1">
+                                        <Image Grid.Row="0" Stretch="Uniform" Source="{Binding SelectedFileUri}" />
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                        </Grid>
 
-                        <Grid Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Grid Grid.Column="0">
-                                <ListView ItemsSource="{Binding SelectedFileTags}" />
-                            </Grid>
-
-                            <Grid Grid.Column="1">
-                                <Image Grid.Row="0" Stretch="Uniform" Source="{Binding SelectedFileUri}" />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-
-                    <materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}" x:Name="MainSnackbar"
+                            <materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}" x:Name="MainSnackbar"
                                             Grid.Row="1" />
-                </Grid>
-            </DockPanel>
-        </materialDesign:DrawerHost>
-    </materialDesign:DialogHost>
-
-
+                        </Grid>
+                    </materialDesign:DrawerHost>
+            </materialDesign:DialogHost>
+        </TabItem>
+        <TabItem Header="Galleries">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
+        </TabItem>
+    </dragablz:TabablzControl>
 </Window>
