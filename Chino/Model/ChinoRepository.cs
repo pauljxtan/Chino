@@ -79,6 +79,11 @@ namespace Chino.Model
             return tags;
         }
 
+        public static List<string> GetTagNamesByImage(string imageName)
+        {
+            return ChinoDbHelper.GetTagNamesByImage(imageName);
+        }
+
         public static List<Image> GetImagesByTag(string tagName)
         {
             return ChinoDbHelper.GetImagesByTag(tagName);

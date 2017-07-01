@@ -13,11 +13,9 @@ using System.Collections.Generic;
 
 namespace Chino.ViewModel
 {
-    public class MainViewModel : ViewModelBase, IDisposable
+    public class MainViewModel : ViewModelBase
     {
-        private SQLiteConnection _dbConnection;
-
-        private string _currentPath = "";
+        private string _currentPath = null;
         private DirectoryInfo _selectedDirectory = null;
         private FileInfo _selectedFile = null;
         private ObservableCollection<TagInfo> _selectedFileTags = new ObservableCollection<TagInfo>();
@@ -26,6 +24,14 @@ namespace Chino.ViewModel
         private ObservableCollection<FileInfo> _currentPathFiles = new ObservableCollection<FileInfo>();
         private ObservableCollection<TagInfo> _availableTags = new ObservableCollection<TagInfo>();
         private string _selectedTagFilter;
+        private TagInfo _selectedGalleryTag = null;
+        private List<ImageInfo> _galleryImages = new List<ImageInfo>();
+        private string _galleryRootDirectory = null;
+
+        // Cache of all image URIs to avoid frequent traversals of the entire directory tree
+        // It should remain up-to-date as long as the user does not add/delete/move files while the application is running
+        // We should also have an option for the user to force a refresh
+        private List<Uri> _allImageUris = null;
 
         public string CurrentPath
         {
@@ -118,29 +124,76 @@ namespace Chino.ViewModel
             }
         }
 
+        public TagInfo SelectedGalleryTag
+        {
+            get { return _selectedGalleryTag; }
+            set
+            {
+                Set(ref _selectedGalleryTag, value);
+                LoadGallery();
+            }
+        }
+
+        public List<ImageInfo> GalleryImages
+        {
+            get { return _galleryImages; }
+            set
+            {
+                Set(ref _galleryImages, value);
+            }
+        }
+
+        public string GalleryRootDirectory
+        {
+            get { return _galleryRootDirectory; }
+            set
+            {
+                Set(ref _galleryRootDirectory, value);
+                ReloadAllImageUris();
+                LoadGallery();
+            }
+        }
+
         public MainViewModel(IDataService dataService)
         {
             if (!File.Exists(Config.DatabasePath))
             {
                 SQLiteConnection.CreateFile(Config.DatabasePath);
             }
-            _dbConnection = new SQLiteConnection($"Data Source={Config.DatabasePath}");
 
-            ShowOpenFolderDialogCommand = new RelayCommand(ShowOpenFolderDialog);
+            ShowTaggingOpenFolderDialogCommand = new RelayCommand(ShowTaggingOpenFolderDialog);
+            ShowGalleriesOpenFolderDialogCommand = new RelayCommand(ShowGalleriesOpenFolderDialog);
             GetPathContentsCommand = new RelayCommand(GetPathContents);
             GoToSelectedDirectoryCommand = new RelayCommand(GoToSelectedDirectory);
             GoToParentDirectoryCommand = new RelayCommand(GoToParentDirectory);
+            LoadGalleryCommand = new RelayCommand(LoadGallery);
 
             SelectedTagFilter = "a";
 
-            // Default folder, for testing only
-            CurrentPath = @"C:\Users\pjxta\Pictures\_pics";
+            // Try to default to user's desktop, otherwise use the current directory
+            try
+            {
+                CurrentPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                GalleryRootDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            }
+            catch (Exception e)
+            {
+                CurrentPath = Directory.GetCurrentDirectory();
+                GalleryRootDirectory = Directory.GetCurrentDirectory();
+            }
+
+            // TODO: Dynamically pick a default (probably just take the first alphabetically)
+            SelectedGalleryTag = new TagInfo("abc", 123);
+
+            // TESTING
         }
 
-        public RelayCommand ShowOpenFolderDialogCommand { get; }
+        public RelayCommand ShowTaggingOpenFolderDialogCommand { get; }
+        public RelayCommand ShowGalleriesOpenFolderDialogCommand { get; }
         public RelayCommand GetPathContentsCommand { get; }
         public RelayCommand GoToSelectedDirectoryCommand { get; }
         public RelayCommand GoToParentDirectoryCommand { get; }
+        public RelayCommand LoadGalleryCommand { get; }
 
         public void UpdateFileTagsInDb()
         {
@@ -153,7 +206,6 @@ namespace Chino.ViewModel
             {
                 if (!currentTags.Contains(tag))
                 {
-                    // TODO: Log this
                     ChinoRepository.RemoveTag(SelectedFile.FileName, tag);
                 }
             }
@@ -162,13 +214,12 @@ namespace Chino.ViewModel
             {
                 if (!previousTags.Contains(tag))
                 {
-                    // TODO: Log this
                     ChinoRepository.AddImageTagRelation(SelectedFile.FileName, tag);
                 }
             }
         }
 
-        private void ShowOpenFolderDialog()
+        private void ShowTaggingOpenFolderDialog()
         {
             var openFolderDialog = new CommonOpenFileDialog()
             {
@@ -185,9 +236,21 @@ namespace Chino.ViewModel
             }
         }
 
-        public void Dispose()
+        private void ShowGalleriesOpenFolderDialog()
         {
-            _dbConnection.Close();
+            var openFolderDialog = new CommonOpenFileDialog()
+            {
+                EnsureReadOnly = true,
+                IsFolderPicker = true,
+                AllowNonFileSystemItems = false,
+                Multiselect = false,
+                InitialDirectory = CurrentPath,
+                Title = "Select folder"
+            };
+            if (openFolderDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                GalleryRootDirectory = openFolderDialog.FileName;
+            }
         }
 
         private void GetPathContents()
@@ -195,17 +258,12 @@ namespace Chino.ViewModel
             if (Directory.Exists(CurrentPath))
             {
                 var regex = new Regex(Config.ImageFileRegex);
-                //var fileNames = from file in Directory.EnumerateFiles(CurrentPath) where regex.Match(file).Success select Path.GetFileName(file);
-                //var directoryNames = from dir in Directory.EnumerateDirectories(CurrentPath) select dir.Substring(dir.LastIndexOf("\\") + 1);
 
                 var files = new List<FileInfo>();
-                foreach (var file in Directory.EnumerateFiles(CurrentPath))
+                foreach (var file in Directory.EnumerateFiles(CurrentPath).Where(f => regex.IsMatch(f)))
                 {
-                    if (regex.Match(file).Success)
-                    {
-                        var fileName = Path.GetFileName(file);
-                        files.Add(new FileInfo(fileName));
-                    }
+                    var fileName = Path.GetFileName(file);
+                    files.Add(new FileInfo(fileName));
                 }
                 CurrentPathFiles = new ObservableCollection<FileInfo>(files);
 
@@ -254,6 +312,45 @@ namespace Chino.ViewModel
                 .Select(t => new TagInfo(t.Name, 123)));
         }
 
+        private void LoadGallery()
+        {
+            // TODO: Support multiple tags!
+
+            if (SelectedGalleryTag == null) return;
+
+            if (_allImageUris == null) ReloadAllImageUris();
+
+            var images = ChinoRepository.GetImagesByTag(SelectedGalleryTag.TagName);
+            var galleryImages = new List<ImageInfo>();
+            foreach (var uri in _allImageUris)
+            {
+                try
+                {
+                    if (ChinoRepository.GetTagNamesByImage(uri.Segments.Last()).Contains(SelectedGalleryTag.TagName))
+                    {
+                        galleryImages.Add(new ImageInfo(uri));
+                    }
+                }
+                catch (Exception e)
+                {
+                    // TODO: Handle weird filenames here (e.g. with single quotes, etc.)
+                }
+            }
+            GalleryImages = galleryImages;
+        }
+
+        // Traverses all files below the root gallery folder - use sparingly
+        private void ReloadAllImageUris()
+        {
+            if (GalleryRootDirectory == null) return;
+
+            var regex = new Regex(Config.ImageFileRegex);
+            _allImageUris = Directory.GetFiles(GalleryRootDirectory, "*", SearchOption.AllDirectories)
+                .Where(f => regex.IsMatch(f))
+                .Select(f => new Uri(Path.GetFullPath(f.Replace(@"'", @"\\'"))))
+                .ToList();
+        }
+
         public class DirectoryInfo
         {
             public string DirectoryName { get; set; }
@@ -284,6 +381,16 @@ namespace Chino.ViewModel
             public FileInfo(string fileName)
             {
                 FileName = fileName;
+            }
+        }
+
+        public class ImageInfo
+        {
+            public Uri ImageUri { get; set; }
+
+            public ImageInfo(Uri imageUri)
+            {
+                ImageUri = imageUri;
             }
         }
 
