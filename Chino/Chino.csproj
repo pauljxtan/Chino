@@ -105,9 +105,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Config.cs" />
+    <Compile Include="Controls\Gallery.xaml.cs">
+      <DependentUpon>Gallery.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Tagging.xaml.cs">
+      <DependentUpon>Tagging.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Database\ChinoDbHelper.cs" />
     <Compile Include="Database\SqliteHelper.cs" />
-    <Compile Include="Design\DesignDataService.cs" />
     <Compile Include="Model\ChinoRepository.cs" />
     <Compile Include="Model\Log.cs" />
     <Compile Include="Model\Tag.cs" />
@@ -115,9 +120,21 @@
     <Compile Include="Model\DataItem.cs" />
     <Compile Include="Model\DataService.cs" />
     <Compile Include="Model\IDataService.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Page Include="MainWindow.xaml">
+    <Compile Include="Model\Util\DirectoryInfo1.cs" />
+    <Compile Include="Model\Util\FileInfo1.cs" />
+    <Compile Include="Model\Util\ImageInfo.cs" />
+    <Compile Include="Model\Util\TagInfo.cs" />
+    <Compile Include="ViewModel\GalleryViewModel.cs" />
+    <Compile Include="ViewModel\TaggingViewModel.cs" />
+    <Page Include="Controls\Gallery.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Tagging.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -125,14 +142,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Main.xaml.cs">
+      <DependentUpon>Main.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Skins\MainSkin.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

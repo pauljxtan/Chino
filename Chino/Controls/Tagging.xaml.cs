@@ -1,26 +1,20 @@
-﻿using System.Windows;
+﻿using Chino.Model.Util;
 using Chino.ViewModel;
+using MaterialDesignThemes.Wpf;
+using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System;
-using MaterialDesignThemes.Wpf;
 
-namespace Chino
+namespace Chino.Controls
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public partial class Tagging : UserControl
     {
         private Point _mouseStartPoint;
 
-        /// <summary>
-        /// Initializes a new instance of the MainWindow class.
-        /// </summary>
-        public MainWindow()
+        public Tagging()
         {
             InitializeComponent();
-            Closing += (s, e) => ViewModelLocator.Cleanup();
         }
 
         private void OnTagFilterClick(object sender, RoutedEventArgs e)
@@ -28,7 +22,7 @@ namespace Chino
             Button button = sender as Button;
             if (button == null) return;
 
-            var viewModel = DataContext as MainViewModel;
+            var viewModel = DataContext as TaggingViewModel;
             viewModel.SelectedTagFilter = button.Content.ToString();
         }
 
@@ -56,7 +50,7 @@ namespace Chino
 
         private void fileTagDataGrid_DragEnter(object sender, DragEventArgs e)
         {
-            var viewModel = DataContext as MainViewModel;
+            var viewModel = DataContext as TaggingViewModel;
             if (!e.Data.GetDataPresent(DataFormats.StringFormat) || sender == e.Source || viewModel.SelectedFile == null)
             {
                 // TODO: this doesn't seem to be actually working...
@@ -68,13 +62,13 @@ namespace Chino
         {
             // TODO: we need to package the number of tags along with the tag name to pass into the viewmodel
             var newTag = e.Data.GetData(DataFormats.StringFormat).ToString();
-            var viewModel = DataContext as MainViewModel;
+            var viewModel = DataContext as TaggingViewModel;
             // Only add the tag if a file is actually selected
             if (viewModel.SelectedFile != null)
             {
                 // TODO: number needs to be re-calculated (incremented by 1) - do this in the viewmodel
                 // TODO: don't add if already existing
-                viewModel.SelectedFileTags.Add(new MainViewModel.TagInfo(newTag, 123));
+                viewModel.SelectedFileTags.Add(new TagInfo(newTag, 123));
                 viewModel.UpdateFileTagsInDb();
             }
         }
