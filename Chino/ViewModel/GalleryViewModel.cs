@@ -8,12 +8,16 @@ using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Chino.Model.Util;
+using System.Collections.ObjectModel;
 
 namespace Chino.ViewModel
 {
     public class GalleryViewModel : ViewModelBase
     {
-        private TagInfo _selectedGalleryTag = null;
+        private static GalleryViewModel _instance = new GalleryViewModel();
+        public static GalleryViewModel Instance { get { return _instance; } }
+
+        private ObservableCollection<TagInfo> _selectedGalleryTags = null;
         private List<ImageInfo> _galleryImages = new List<ImageInfo>();
         private string _galleryRootDirectory = null;
 
@@ -22,12 +26,12 @@ namespace Chino.ViewModel
         // We should also have an option for the user to force a refresh
         private List<Uri> _allImageUris = null;
 
-        public TagInfo SelectedGalleryTag
+        public ObservableCollection<TagInfo> SelectedGalleryTags
         {
-            get { return _selectedGalleryTag; }
+            get { return _selectedGalleryTags; }
             set
             {
-                Set(ref _selectedGalleryTag, value);
+                Set(ref _selectedGalleryTags, value);
                 LoadGallery();
             }
         }
@@ -54,7 +58,6 @@ namespace Chino.ViewModel
 
         public GalleryViewModel()
         {
-
             ShowGalleriesOpenFolderDialogCommand = new RelayCommand(ShowGalleriesOpenFolderDialog);
             LoadGalleryCommand = new RelayCommand(LoadGallery);
 
@@ -68,10 +71,8 @@ namespace Chino.ViewModel
                 GalleryRootDirectory = Directory.GetCurrentDirectory();
             }
 
-            // TODO: Dynamically pick a default (probably just take the first alphabetically)
-            SelectedGalleryTag = new TagInfo("abc", 123);
-
-            // TESTING
+            // Initialize to the alphabetically first tag
+            SelectedGalleryTags = new ObservableCollection<TagInfo>() { MainViewModel.Instance.AvailableTags.First() };
         }
 
         public RelayCommand ShowGalleriesOpenFolderDialogCommand { get; }
@@ -94,28 +95,38 @@ namespace Chino.ViewModel
             }
         }
 
-        private void LoadGallery()
+        public void LoadGallery()
         {
             // TODO: Support multiple tags!
 
-            if (SelectedGalleryTag == null) return;
+            if (SelectedGalleryTags == null || SelectedGalleryTags.Count == 0) return;
 
             if (_allImageUris == null) ReloadAllImageUris();
 
-            var images = ChinoRepository.GetImagesByTag(SelectedGalleryTag.TagName);
             var galleryImages = new List<ImageInfo>();
             foreach (var uri in _allImageUris)
             {
                 try
                 {
-                    if (ChinoRepository.GetTagNamesByImage(uri.Segments.Last()).Contains(SelectedGalleryTag.TagName))
+                    var imageTags = ChinoRepository.GetTagNamesByImage(uri.Segments.Last());
+                    if (imageTags.Count == 0) continue;
+                    var allTagsPresent = true;
+                    foreach (var tag in SelectedGalleryTags)
+                    {
+                        if (!imageTags.Contains(tag.TagName))
+                        {
+                            allTagsPresent = false;
+                        }
+                    }
+                    if (allTagsPresent)
                     {
                         galleryImages.Add(new ImageInfo(uri));
                     }
                 }
                 catch (Exception e)
                 {
-                    // TODO: Handle weird filenames here (e.g. with single quotes, etc.)
+                    // TODO: Properly handle weird filenames here (e.g. with single quotes, etc.)
+                    // For now just ignore it...
                 }
             }
             GalleryImages = galleryImages;

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ignore="http://www.galasoft.ch/ignore"
         xmlns:controls="clr-namespace:Chino.Controls"
+        xmlns:vm="clr-namespace:Chino.ViewModel"
 
         mc:Ignorable="d ignore"
         MinHeight="700"
@@ -25,6 +26,10 @@
         xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
         >
 
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -33,29 +38,104 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <dragablz:TabablzControl>
-        <dragablz:TabablzControl.InterTabController>
-            <dragablz:InterTabController />
-        </dragablz:TabablzControl.InterTabController>
+    <materialDesign:DialogHost Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+        <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <TabItem Header="Tagging">
-            <controls:Tagging />
-        </TabItem>
+                <Grid Grid.Column="0">
+                    <Border BorderBrush="Purple" BorderThickness="0">
+                        <Grid Margin="0,0,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryDark" FontSize="24" Margin="0,0,0,10">
+                                <TextBlock HorizontalAlignment="Center" Margin="0,5,0,5">Tags</TextBlock>
+                            </materialDesign:ColorZone>
+                            <WrapPanel Grid.Row="1"  HorizontalAlignment="Center">
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">a</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">b</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">c</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">d</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">e</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">f</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">g</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">h</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">i</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">j</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">k</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">l</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">m</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">n</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">o</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">p</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">q</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">r</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">s</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">t</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">u</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">v</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">w</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">x</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">y</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">z</Button>
+                            </WrapPanel>
+                            <ScrollViewer Grid.Row="2" Margin="5,5,5,5"
+                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding AvailableTags}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <materialDesign:Chip x:Name="tagChip" Margin="3,3,3,3"
+                                                                         PreviewMouseLeftButtonDown="tagChip_PreviewMouseLeftButtonDown"
+                                                                         PreviewMouseMove="tagChip_MouseMove" 
+                                                                         Content="{Binding TagName}" Icon="{Binding NumberOfImages}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <dragablz:TabablzControl>
+                        <dragablz:TabablzControl.InterTabController>
+                            <dragablz:InterTabController />
+                        </dragablz:TabablzControl.InterTabController>
 
-        <TabItem Header="Galleries">
-            <controls:Gallery />
-        </TabItem>
+                        <TabItem Header="Tagging">
+                            <controls:Tagging />
+                        </TabItem>
 
-        <TabItem Header="Database">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
-        </TabItem>
+                        <TabItem Header="Galleries">
+                            <controls:Gallery />
+                        </TabItem>
 
-        <TabItem Header="Logs">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
-        </TabItem>
+                        <TabItem Header="Database">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
+                        </TabItem>
 
-        <TabItem Header="Fun Stuff">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
-        </TabItem>
-    </dragablz:TabablzControl>
+                        <TabItem Header="Logs">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
+                        </TabItem>
+
+                        <TabItem Header="Fun Stuff">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
+                        </TabItem>
+                    </dragablz:TabablzControl>
+                </Grid>
+                <!--<materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}" x:Name="MainSnackbar"
+                                            Grid.Row="1" />-->
+            </Grid>
+        </materialDesign:DrawerHost>
+    </materialDesign:DialogHost>
 </Window>

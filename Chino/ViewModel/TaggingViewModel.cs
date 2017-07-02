@@ -15,6 +15,9 @@ namespace Chino.ViewModel
 {
     public class TaggingViewModel : ViewModelBase
     {
+        private static TaggingViewModel _instance = new TaggingViewModel();
+        public static TaggingViewModel Instance { get { return _instance; } }
+
         private string _currentPath = null;
         private DirectoryInfo1 _selectedDirectory = null;
         private FileInfo1 _selectedFile = null;
@@ -22,8 +25,6 @@ namespace Chino.ViewModel
         private Uri _selectedFileUri;
         private ObservableCollection<DirectoryInfo1> _currentPathDirectories = new ObservableCollection<DirectoryInfo1>();
         private ObservableCollection<FileInfo1> _currentPathFiles = new ObservableCollection<FileInfo1>();
-        private ObservableCollection<TagInfo> _availableTags = new ObservableCollection<TagInfo>();
-        private string _selectedTagFilter;
 
         public string CurrentPath
         {
@@ -100,30 +101,12 @@ namespace Chino.ViewModel
             set { Set(ref _currentPathFiles, value); }
         }
 
-        public ObservableCollection<TagInfo> AvailableTags
-        {
-            get { return _availableTags; }
-            set { Set(ref _availableTags, value); }
-        }
-
-        public string SelectedTagFilter
-        {
-            get { return _selectedTagFilter; }
-            set
-            {
-                Set(ref _selectedTagFilter, value);
-                ReloadAvailableTags();
-            }
-        }
-
         public TaggingViewModel()
         {
             ShowTaggingOpenFolderDialogCommand = new RelayCommand(ShowTaggingOpenFolderDialog);
             GetPathContentsCommand = new RelayCommand(GetPathContents);
             GoToSelectedDirectoryCommand = new RelayCommand(GoToSelectedDirectory);
             GoToParentDirectoryCommand = new RelayCommand(GoToParentDirectory);
-
-            SelectedTagFilter = "a";
 
             // Try to default to user's desktop, otherwise use the current directory
             try
@@ -234,13 +217,6 @@ namespace Chino.ViewModel
         private void GoToParentDirectory()
         {
             CurrentPath = Path.GetFullPath(Directory.GetParent(CurrentPath).FullName);
-        }
-
-        private void ReloadAvailableTags()
-        {
-            AvailableTags = new ObservableCollection<TagInfo>(ChinoRepository.GetAllTags()
-                .Where(t => t.Name.StartsWith(SelectedTagFilter))
-                .Select(t => new TagInfo(t.Name, 123)));
         }
     }
 }

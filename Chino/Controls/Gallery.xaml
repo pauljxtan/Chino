@@ -26,8 +26,8 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="3*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="0,5,0,0">
                     <Grid.ColumnDefinitions>
@@ -46,23 +46,29 @@
                 </Grid>
                 <ScrollViewer Grid.Row="1" Margin="5,5,5,5"
                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding AvailableTags}" >
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <materialDesign:Chip x:Name="tagChip" Margin="3,3,3,3"
+                    <materialDesign:ColorZone Mode="PrimaryLight"
+                                              DragEnter="selectedTagsZone_DragEnter"
+                                              Drop="selectedTagsZone_Drop"
+                                              AllowDrop="True">
+                        <ItemsControl ItemsSource="{Binding SelectedGalleryTags}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <materialDesign:Chip x:Name="tagChip" Margin="3,3,3,3"
                                                  Content="{Binding TagName}" Icon="{Binding NumberOfImages}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </materialDesign:ColorZone>
                 </ScrollViewer>
+
                 <ScrollViewer Grid.Row="2" Margin="5,5,5,5"
                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding GalleryImages}" >
+                    <ItemsControl ItemsSource="{Binding GalleryImages}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel />

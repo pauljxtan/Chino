@@ -17,15 +17,6 @@ namespace Chino.Controls
             InitializeComponent();
         }
 
-        private void OnTagFilterClick(object sender, RoutedEventArgs e)
-        {
-            Button button = sender as Button;
-            if (button == null) return;
-
-            var viewModel = DataContext as TaggingViewModel;
-            viewModel.SelectedTagFilter = button.Content.ToString();
-        }
-
         private void tagChip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _mouseStartPoint = e.GetPosition(null);
@@ -51,7 +42,7 @@ namespace Chino.Controls
         private void fileTagDataGrid_DragEnter(object sender, DragEventArgs e)
         {
             var viewModel = DataContext as TaggingViewModel;
-            if (!e.Data.GetDataPresent(DataFormats.StringFormat) || sender == e.Source || viewModel.SelectedFile == null)
+            if (!e.Data.GetDataPresent(typeof(TagInfo)) || sender == e.Source || viewModel.SelectedFile == null)
             {
                 // TODO: this doesn't seem to be actually working...
                 e.Effects = DragDropEffects.None;
@@ -60,15 +51,16 @@ namespace Chino.Controls
 
         private void fileTagDataGrid_Drop(object sender, DragEventArgs e)
         {
-            // TODO: we need to package the number of tags along with the tag name to pass into the viewmodel
-            var newTag = e.Data.GetData(DataFormats.StringFormat).ToString();
+            if (!e.Data.GetDataPresent(typeof(TagInfo))) return;
+
+            var tagInfo = e.Data.GetData(typeof(TagInfo)) as TagInfo;
             var viewModel = DataContext as TaggingViewModel;
             // Only add the tag if a file is actually selected
             if (viewModel.SelectedFile != null)
             {
                 // TODO: number needs to be re-calculated (incremented by 1) - do this in the viewmodel
                 // TODO: don't add if already existing
-                viewModel.SelectedFileTags.Add(new TagInfo(newTag, 123));
+                viewModel.SelectedFileTags.Add(tagInfo);
                 viewModel.UpdateFileTagsInDb();
             }
         }
