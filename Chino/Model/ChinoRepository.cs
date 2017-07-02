@@ -28,7 +28,7 @@ namespace Chino.Model
 
         public static bool AddTag(string tagName)
         {
-            return ChinoDbHelper.InsertImage(tagName);
+            return ChinoDbHelper.InsertTag(tagName);
         }
 
         public static bool AddImageTagRelation(string imageName, string tagName)

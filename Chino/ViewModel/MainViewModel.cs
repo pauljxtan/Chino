@@ -1,6 +1,7 @@
 ﻿using Chino.Model;
 using Chino.Model.Util;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,6 +18,7 @@ namespace Chino.ViewModel
 
         private ObservableCollection<TagInfo> _availableTags = new ObservableCollection<TagInfo>();
         private string _selectedTagFilter;
+        private string _newTagName;
 
         public ObservableCollection<TagInfo> AvailableTags
         {
@@ -34,11 +36,24 @@ namespace Chino.ViewModel
             }
         }
 
+        public string NewTagName
+        {
+            get { return _newTagName; }
+            set { Set(ref _newTagName, value); }
+        }
+
         public MainViewModel()
         {
-
+            AddNewTagCommand = new RelayCommand(AddNewTag);
             SelectedTagFilter = "a";
+        }
 
+        public RelayCommand AddNewTagCommand { get; }
+
+        private void AddNewTag()
+        {
+            ChinoRepository.AddTag(NewTagName);
+            ReloadAvailableTags();
         }
 
         private void ReloadAvailableTags()
