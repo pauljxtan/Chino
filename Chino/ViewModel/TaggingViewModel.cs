@@ -101,7 +101,8 @@ namespace Chino.ViewModel
             }
             catch (Exception e)
             {
-                CurrentPath = Directory.GetCurrentDirectory();
+                //CurrentPath = Directory.GetCurrentDirectory();
+                CurrentPath = AppDomain.CurrentDomain.BaseDirectory;
             }
         }
 
@@ -150,6 +151,7 @@ namespace Chino.ViewModel
                     files.Add(new FileInfo1(fileName));
                 }
                 CurrentPathFiles = new ObservableCollection<FileInfo1>(files);
+                SelectedFile = CurrentPathFiles.FirstOrDefault();
 
                 var directories = new List<DirectoryInfo1>();
                 // First item in list is parent directory                   

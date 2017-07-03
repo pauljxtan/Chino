@@ -50,10 +50,16 @@ namespace Chino.ViewModel
         {
             ChinoRepository.AddTag(NewTagName);
             ReloadAvailableTags();
+            SelectedTagFilter = NewTagName[0].ToString();
         }
 
         public void ReloadAvailableTags()
         {
+            if (ChinoRepository.GetAllTags().Count == 0)
+            {
+                ChinoRepository.AddTag("mollusc_abode");
+                SelectedTagFilter = "m";
+            }
             AvailableTags = new ObservableCollection<TagInfo>(ChinoRepository.GetAllTags()
                 .Where(t => t.Name.StartsWith(SelectedTagFilter))
                 .Select(t => new TagInfo(t.Name, ChinoRepository.GetImagesByTag(t.Name).Count)));

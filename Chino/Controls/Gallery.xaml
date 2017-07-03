@@ -27,6 +27,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="0,5,0,0">
@@ -44,14 +45,22 @@
                         <materialDesign:PackIcon Kind="Refresh" />
                     </Button>
                 </Grid>
-                <ScrollViewer Grid.Row="1" Margin="5,5,5,5"
+                <Grid Grid.Row="1" Margin="5,5,0,0" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:PackIcon Grid.Column="0" Margin="0,0,2,0" Kind="Information" />
+                    <TextBlock Grid.Column="1" TextWrapping="Wrap" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Drop tags below to create galleries!" />
+                </Grid>
+                <ScrollViewer Grid.Row="2" Margin="5,5,5,5"
                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <materialDesign:ColorZone Mode="PrimaryLight"
                                               DragEnter="selectedTagsZone_DragEnter"
                                               Drop="selectedTagsZone_Drop"
                                               AllowDrop="True"
                                               MinHeight="38">
-                                              
+
                         <ItemsControl ItemsSource="{Binding SelectedGalleryTags}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -69,7 +78,7 @@
                     </materialDesign:ColorZone>
                 </ScrollViewer>
 
-                <ScrollViewer Grid.Row="2" Margin="5,5,5,5"
+                <ScrollViewer Grid.Row="3" Margin="5,5,5,5"
                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding GalleryImages}">
                         <ItemsControl.ItemsPanel>

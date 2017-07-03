@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 
 namespace Chino.Database
 {
@@ -11,8 +12,19 @@ namespace Chino.Database
         public SqliteHelper(string databasePath)
         {
             var connectionString = $"Data Source={databasePath};Version=3";
+            var initDb = false;
+
+            if (!File.Exists(databasePath))
+            {
+                SQLiteConnection.CreateFile(databasePath);
+                initDb = true;
+            }
+
             _dbConnection = new SQLiteConnection(connectionString);
+
+            if (initDb) CreateTables();
         }
+
 
         public bool ExecuteNonQuery(string sql)
         {
@@ -35,6 +47,32 @@ namespace Chino.Database
         public void Dispose()
         {
             _dbConnection.Dispose();
+        }
+
+        private void CreateTables()
+        {
+            ExecuteNonQuery(@"
+                    CREATE TABLE IF NOT EXISTS images (
+                        image_name TEXT PRIMARY KEY
+                    );
+
+                    CREATE TABLE IF NOT EXISTS tags (
+                        tag_name TEXT PRIMARY KEY
+                    );
+
+                    CREATE TABLE IF NOT EXISTS imagetags (
+                        image_name TEXT NOT NULL,
+                        tag_name TEXT NOT NULL,
+                        FOREIGN KEY(image_name) REFERENCES image(image_name),
+                        FOREIGN KEY(tag_name) REFERENCES tags(tag_name)
+                    );
+
+                    CREATE TABLE IF NOT EXISTS logs (
+                        datetime TEXT NOT NULL,
+                        log_level TEXT NOT NULL,
+                        log_event TEXT NOT NULL,
+                        message TEXT
+                    );");
         }
     }
 }

@@ -24,107 +24,119 @@
     <materialDesign:DialogHost Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Margin="0,5,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                <Grid Grid.Row="0" Margin="0,5,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                        <Button Grid.Column="0" Command="{Binding ShowTaggingOpenFolderDialogCommand}">
-                            <materialDesign:PackIcon Kind="Folder" />
-                        </Button>
-                        <TextBox Grid.Column="1" Margin="5,0,5,0" Text="{Binding CurrentPath}" />
-                        <Button Grid.Column="2" Command="{Binding GetPathContentsCommand}">
-                            <materialDesign:PackIcon Kind="Refresh" />
-                        </Button>
-                    </Grid>
+                    <Button Grid.Column="0" Command="{Binding ShowTaggingOpenFolderDialogCommand}">
+                        <materialDesign:PackIcon Kind="Folder" />
+                    </Button>
+                    <TextBox Grid.Column="1" Margin="5,0,5,0" Text="{Binding CurrentPath}" />
+                    <Button Grid.Column="2" Command="{Binding GetPathContentsCommand}">
+                        <materialDesign:PackIcon Kind="Refresh" />
+                    </Button>
+                </Grid>
 
-                    <Grid Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                        <Grid Grid.Column="0">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-                                <Border Grid.Row="0" BorderBrush="Purple" BorderThickness="0">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
-                                                          PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
-                                        <DataGrid AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
-                                                          ItemsSource="{Binding CurrentPathDirectories}" SelectedItem="{Binding SelectedDirectory}">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Folder" Binding="{Binding DirectoryName}" MinWidth="180" />
-                                                <DataGridTextColumn Header="# Folders" Binding="{Binding NumberOfSubdirs}" />
-                                                <DataGridTextColumn Header="# Images" Binding="{Binding NumberOfImages}" />
-                                            </DataGrid.Columns>
-                                        </DataGrid>
-                                    </ScrollViewer>
-                                </Border>
-
-                                <Grid Grid.Row="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <Grid Grid.Column="0">
-                                    <!-- TODO: change this to ItemsControl -->
-                                        <DataGrid x:Name="fileTagDataGrid" AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
-                                                  ItemsSource="{Binding SelectedFileTags}"
-                                                  DragEnter="fileTagDataGrid_DragEnter"
-                                                  Drop="fileTagDataGrid_Drop"
-                                                  AllowDrop="True">
-                                            <DataGrid.Columns>
-                                                <DataGridTemplateColumn>
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel>
-                                                                <materialDesign:Chip x:Name="tagChip"
-                                                                                     Content="{Binding TagName}" Icon="{Binding NumberOfImages}"
-                                                                                     IsDeletable="True" DeleteClick="tagChip_DeleteClick" />
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                            </DataGrid.Columns>
-                                        </DataGrid>
-                                    </Grid>
-
-                                    <Grid Grid.Column="1">
-                                        <Image Grid.Row="0" Stretch="Uniform" Source="{Binding SelectedFileUri, Mode=OneWay}" />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        <Grid Grid.Column="1">
-                            <Border BorderBrush="Purple" BorderThickness="0">
+                            <Border Grid.Row="0" BorderBrush="Purple" BorderThickness="0">
                                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
-                                                      PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                                                          PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
                                     <DataGrid AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
-                                                      ItemsSource="{Binding CurrentPathFiles}" SelectedItem="{Binding SelectedFile}">
+                                                          ItemsSource="{Binding CurrentPathDirectories}" SelectedItem="{Binding SelectedDirectory}">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Header="File" Binding="{Binding FileName}"  />
+                                            <DataGridTextColumn Header="Folder" Binding="{Binding DirectoryName}" MinWidth="180" />
+                                            <DataGridTextColumn Header="# Folders" Binding="{Binding NumberOfSubdirs}" />
+                                            <DataGridTextColumn Header="# Images" Binding="{Binding NumberOfImages}" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </ScrollViewer>
                             </Border>
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid Grid.Column="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="5,5,0,0" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:PackIcon Grid.Column="0" Margin="0,0,2,0" Kind="Information" />
+                    <TextBlock Grid.Column="1" TextWrapping="Wrap" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Drop tags below to add them to the selected image." />
+                </Grid>
+                                    <!-- TODO: change this to ItemsControl -->
+                                    <DataGrid Grid.Row="1" x:Name="fileTagDataGrid" AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
+                                                  ItemsSource="{Binding SelectedFileTags}"
+                                                  DragEnter="fileTagDataGrid_DragEnter"
+                                                  Drop="fileTagDataGrid_Drop"
+                                                  AllowDrop="True">
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn>
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <materialDesign:Chip x:Name="tagChip"
+                                                                                     Content="{Binding TagName}" Icon="{Binding NumberOfImages}"
+                                                                                     IsDeletable="True" DeleteClick="tagChip_DeleteClick" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+
+                                <Grid Grid.Column="1">
+                                    <Image Grid.Row="0" Stretch="Uniform" Source="{Binding SelectedFileUri, Mode=OneWay}" />
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
 
-                
+                    <Grid Grid.Column="1">
+                        <Border BorderBrush="Purple" BorderThickness="0">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                                                      PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                                <DataGrid AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
+                                                      ItemsSource="{Binding CurrentPathFiles}" SelectedItem="{Binding SelectedFile}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="File" Binding="{Binding FileName}"  />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ScrollViewer>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>
 

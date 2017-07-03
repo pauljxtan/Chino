@@ -68,11 +68,11 @@ namespace Chino.ViewModel
             }
             catch (Exception e)
             {
-                GalleryRootDirectory = Directory.GetCurrentDirectory();
+                //GalleryRootDirectory = Directory.GetCurrentDirectory();
+                GalleryRootDirectory = AppDomain.CurrentDomain.BaseDirectory;
             }
 
-            // Initialize to the alphabetically first tag
-            SelectedGalleryTags = new ObservableCollection<TagInfo>() { MainViewModel.Instance.AvailableTags.First() };
+            SelectedGalleryTags = new ObservableCollection<TagInfo>();
         }
 
         public RelayCommand ShowGalleriesOpenFolderDialogCommand { get; }

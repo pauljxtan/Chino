@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -9,7 +10,9 @@ namespace Chino.Database
 {
     public static class ChinoDbHelper
     {
-        private static SqliteHelper _sqliteHelper = new SqliteHelper(Config.DatabasePath);
+        //private static SqliteHelper _sqliteHelper = new SqliteHelper(Config.DefaultDatabasePath);
+        //private static SqliteHelper _sqliteHelper = new SqliteHelper($"{Directory.GetCurrentDirectory()}\\chino.sqlite");
+        private static SqliteHelper _sqliteHelper = new SqliteHelper($"{AppDomain.CurrentDomain.BaseDirectory}\\chino.sqlite");
 
         #region Gets
 
