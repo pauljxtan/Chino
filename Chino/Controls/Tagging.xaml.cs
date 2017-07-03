@@ -39,6 +39,14 @@ namespace Chino.Controls
             }
         }
 
+        private void tagChip_DeleteClick(object sender, RoutedEventArgs e)
+        {
+            Chip tagChip = sender as Chip;
+            var tagName = tagChip.Content.ToString();
+            var viewmodel = DataContext as TaggingViewModel;
+            viewmodel.RemoveTagFromSelectedImage(tagName);
+        }
+
         private void fileTagDataGrid_DragEnter(object sender, DragEventArgs e)
         {
             var viewModel = DataContext as TaggingViewModel;
@@ -58,10 +66,7 @@ namespace Chino.Controls
             // Only add the tag if a file is actually selected
             if (viewModel.SelectedFile != null)
             {
-                // TODO: number needs to be re-calculated (incremented by 1) - do this in the viewmodel
-                // TODO: don't add if already existing
-                viewModel.SelectedFileTags.Add(tagInfo);
-                viewModel.UpdateFileTagsInDb();
+                viewModel.AddTagToSelectedImage(tagInfo);
             }
         }
 

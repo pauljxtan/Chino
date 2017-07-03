@@ -2,12 +2,8 @@
 using Chino.Model.Util;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chino.ViewModel
 {
@@ -56,12 +52,11 @@ namespace Chino.ViewModel
             ReloadAvailableTags();
         }
 
-        private void ReloadAvailableTags()
+        public void ReloadAvailableTags()
         {
             AvailableTags = new ObservableCollection<TagInfo>(ChinoRepository.GetAllTags()
                 .Where(t => t.Name.StartsWith(SelectedTagFilter))
-                .Select(t => new TagInfo(t.Name, 123)));
+                .Select(t => new TagInfo(t.Name, ChinoRepository.GetImagesByTag(t.Name).Count)));
         }
-
     }
 }

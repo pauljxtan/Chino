@@ -79,6 +79,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Grid Grid.Column="0">
+                                    <!-- TODO: change this to ItemsControl -->
                                         <DataGrid x:Name="fileTagDataGrid" AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
                                                   ItemsSource="{Binding SelectedFileTags}"
                                                   DragEnter="fileTagDataGrid_DragEnter"
@@ -90,9 +91,8 @@
                                                         <DataTemplate>
                                                             <StackPanel>
                                                                 <materialDesign:Chip x:Name="tagChip"
-                                                                                         PreviewMouseLeftButtonDown="tagChip_PreviewMouseLeftButtonDown"
-                                                                                         PreviewMouseMove="tagChip_MouseMove" 
-                                                                                         Content="{Binding TagName}" Icon="{Binding NumberOfImages}" />
+                                                                                     Content="{Binding TagName}" Icon="{Binding NumberOfImages}"
+                                                                                     IsDeletable="True" DeleteClick="tagChip_DeleteClick" />
                                                             </StackPanel>
                                                         </DataTemplate>
                                                     </DataGridTemplateColumn.CellTemplate>

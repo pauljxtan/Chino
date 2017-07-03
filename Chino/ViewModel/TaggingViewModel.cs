@@ -32,6 +32,7 @@ namespace Chino.ViewModel
             set
             {
                 Set(ref _currentPath, value);
+                SelectedFile = null;
                 GetPathContents();
             }
         }
@@ -55,22 +56,7 @@ namespace Chino.ViewModel
             set
             {
                 Set(ref _selectedFile, value);
-                try
-                {
-                    SelectedFileUri = new Uri($"{CurrentPath}\\{SelectedFile.FileName}");
-                    List<Tag> tags = ChinoRepository.GetTagsByImage(SelectedFile.FileName);
-                    var tagInfos = new List<TagInfo>();
-                    foreach (var tag in tags)
-                    {
-                        // Hardcoded number for now, calculate this later
-                        tagInfos.Add(new TagInfo(tag.Name, 123));
-                    }
-                    SelectedFileTags = new ObservableCollection<TagInfo>(tagInfos);
-                }
-                catch (NullReferenceException)
-                {
-                    // TODO: handle
-                }
+                ReloadSelectedFileTags();
             }
         }
 
@@ -126,41 +112,25 @@ namespace Chino.ViewModel
         public RelayCommand GoToParentDirectoryCommand { get; }
         public RelayCommand LoadGalleryCommand { get; }
 
-        public void UpdateFileTagsInDb()
+        public void AddTagToSelectedImage(TagInfo tagInfo)
         {
-            if (SelectedFile == null) return;
-            var previousTags = ChinoRepository.GetTagsByImage(SelectedFile.FileName).Select(t => t.Name);
-            var currentTags = SelectedFileTags.Select(ti => ti.TagName);
+            ChinoRepository.AddImageTagRelation(SelectedFile.FileName, tagInfo.TagName);
+            ReloadSelectedFileTags();
+            // TODO: Available tags is not refreshing with the new image count...
+            MainViewModel.Instance.ReloadAvailableTags();
+        }
 
-            // Any tags in previous but not current should be deleted from the database
-            foreach (var tag in previousTags)
-            {
-                if (!currentTags.Contains(tag))
-                {
-                    ChinoRepository.RemoveTag(SelectedFile.FileName, tag);
-                }
-            }
-            // Any tags in current but not previous should be added to the database
-            foreach (var tag in currentTags)
-            {
-                if (!previousTags.Contains(tag))
-                {
-                    ChinoRepository.AddImageTagRelation(SelectedFile.FileName, tag);
-                }
-            }
+        public void RemoveTagFromSelectedImage(string tagName)
+        {
+            ChinoRepository.RemoveImageTagRelation(SelectedFile.FileName, tagName);
+            ReloadSelectedFileTags();
+            // TODO: Available tags is not refreshing with the new image count...
+            MainViewModel.Instance.ReloadAvailableTags();
         }
 
         private void ShowTaggingOpenFolderDialog()
         {
-            var openFolderDialog = new CommonOpenFileDialog()
-            {
-                EnsureReadOnly = true,
-                IsFolderPicker = true,
-                AllowNonFileSystemItems = false,
-                Multiselect = false,
-                InitialDirectory = CurrentPath,
-                Title = "Select folder"
-            };
+            var openFolderDialog = Util.GetOpenFolderDialog(CurrentPath);
             if (openFolderDialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 CurrentPath = openFolderDialog.FileName;
@@ -217,6 +187,51 @@ namespace Chino.ViewModel
         private void GoToParentDirectory()
         {
             CurrentPath = Path.GetFullPath(Directory.GetParent(CurrentPath).FullName);
+        }
+
+        private void ReloadSelectedFileTags()
+        {
+            try
+            {
+                SelectedFileUri = new Uri($"{CurrentPath}\\{SelectedFile.FileName}");
+                List<Tag> tags = ChinoRepository.GetTagsByImage(SelectedFile.FileName);
+                var tagInfos = new List<TagInfo>();
+                foreach (var tag in tags)
+                {
+                    var numberOfImages = ChinoRepository.GetImagesByTag(tag.Name).Count;
+                    tagInfos.Add(new TagInfo(tag.Name, numberOfImages));
+                }
+                SelectedFileTags = new ObservableCollection<TagInfo>(tagInfos);
+            }
+            catch (NullReferenceException)
+            {
+                // TODO: handle
+            }
+        }
+
+        // Not sure if we really need this after all, keeping it around just in case...
+        private void UpdateFileTagsInDb()
+        {
+            if (SelectedFile == null) return;
+            var previousTags = ChinoRepository.GetTagsByImage(SelectedFile.FileName).Select(t => t.Name);
+            var currentTags = SelectedFileTags.Select(ti => ti.TagName);
+
+            // Any tags in previous but not current should be deleted from the database
+            foreach (var tag in previousTags)
+            {
+                if (!currentTags.Contains(tag))
+                {
+                    ChinoRepository.RemoveTag(SelectedFile.FileName, tag);
+                }
+            }
+            // Any tags in current but not previous should be added to the database
+            foreach (var tag in currentTags)
+            {
+                if (!previousTags.Contains(tag))
+                {
+                    ChinoRepository.AddImageTagRelation(SelectedFile.FileName, tag);
+                }
+            }
         }
     }
 }

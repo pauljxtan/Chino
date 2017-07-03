@@ -127,6 +127,7 @@
     <Compile Include="ViewModel\GalleryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\TaggingViewModel.cs" />
+    <Compile Include="ViewModel\Util.cs" />
     <Page Include="Controls\Gallery.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

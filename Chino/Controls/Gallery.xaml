@@ -49,7 +49,9 @@
                     <materialDesign:ColorZone Mode="PrimaryLight"
                                               DragEnter="selectedTagsZone_DragEnter"
                                               Drop="selectedTagsZone_Drop"
-                                              AllowDrop="True">
+                                              AllowDrop="True"
+                                              MinHeight="38">
+                                              
                         <ItemsControl ItemsSource="{Binding SelectedGalleryTags}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -59,7 +61,8 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <materialDesign:Chip x:Name="tagChip" Margin="3,3,3,3"
-                                                 Content="{Binding TagName}" Icon="{Binding NumberOfImages}" />
+                                                         Content="{Binding TagName}" Icon="{Binding NumberOfImages}"
+                                                         IsDeletable="True" DeleteClick="tagChip_DeleteClick" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

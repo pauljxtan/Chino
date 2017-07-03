@@ -52,6 +52,12 @@ namespace Chino.Model
             return success;
         }
 
+        public static bool RemoveImageTagRelation(string imageName, string tagName)
+        {
+            if (!(ImageExists(imageName) && TagExists(tagName))) return true;
+            return ChinoDbHelper.DeleteImageTagRelation(imageName, tagName);
+        }
+
         public static void RemoveTag(string imageName, string tagName)
         {
             if (TagExists(tagName))

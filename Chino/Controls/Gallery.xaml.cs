@@ -38,5 +38,13 @@ namespace Chino.Controls
                 viewModel.LoadGallery();
             }
         }
+
+        private void tagChip_DeleteClick(object sender, RoutedEventArgs e)
+        {
+            Chip tagChip = sender as Chip;
+            var tagName = tagChip.Content.ToString();
+            var viewmodel = DataContext as GalleryViewModel;
+            viewmodel.RemoveSelectedGalleryTag(tagName);
+        }
     }
 }

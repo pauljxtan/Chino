@@ -87,7 +87,7 @@
                                 <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">z</Button>
                             </WrapPanel>
 
-                            <Grid Grid.Row="2" Margin="0,5,0,0">
+                            <Grid Grid.Row="2" Margin="0,5,5,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />

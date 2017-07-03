@@ -18,7 +18,7 @@ namespace Chino.ViewModel
         public static GalleryViewModel Instance { get { return _instance; } }
 
         private ObservableCollection<TagInfo> _selectedGalleryTags = null;
-        private List<ImageInfo> _galleryImages = new List<ImageInfo>();
+        private ObservableCollection<ImageInfo> _galleryImages = new ObservableCollection<ImageInfo>();
         private string _galleryRootDirectory = null;
 
         // Cache of all image URIs to avoid frequent traversals of the entire directory tree
@@ -36,7 +36,7 @@ namespace Chino.ViewModel
             }
         }
 
-        public List<ImageInfo> GalleryImages
+        public ObservableCollection<ImageInfo> GalleryImages
         {
             get { return _galleryImages; }
             set
@@ -80,15 +80,7 @@ namespace Chino.ViewModel
 
         private void ShowGalleriesOpenFolderDialog()
         {
-            var openFolderDialog = new CommonOpenFileDialog()
-            {
-                EnsureReadOnly = true,
-                IsFolderPicker = true,
-                AllowNonFileSystemItems = false,
-                Multiselect = false,
-                InitialDirectory = GalleryRootDirectory,
-                Title = "Select folder"
-            };
+            var openFolderDialog = Util.GetOpenFolderDialog(GalleryRootDirectory);
             if (openFolderDialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 GalleryRootDirectory = openFolderDialog.FileName;
@@ -97,9 +89,11 @@ namespace Chino.ViewModel
 
         public void LoadGallery()
         {
-            // TODO: Support multiple tags!
-
-            if (SelectedGalleryTags == null || SelectedGalleryTags.Count == 0) return;
+            if (SelectedGalleryTags == null || SelectedGalleryTags.Count == 0)
+            {
+                GalleryImages.Clear();
+                return;
+            }
 
             if (_allImageUris == null) ReloadAllImageUris();
 
@@ -129,7 +123,7 @@ namespace Chino.ViewModel
                     // For now just ignore it...
                 }
             }
-            GalleryImages = galleryImages;
+            GalleryImages = new ObservableCollection<ImageInfo>(galleryImages);
         }
 
         // Traverses all files below the root gallery folder - use sparingly
@@ -144,5 +138,16 @@ namespace Chino.ViewModel
                 .ToList();
         }
 
+        public void RemoveSelectedGalleryTag(string tagName)
+        {
+            if (SelectedGalleryTags.Count == 0) return;
+
+            foreach (var tagInfo in SelectedGalleryTags)
+            {
+                if (tagInfo.TagName == tagName) SelectedGalleryTags.Remove(tagInfo);
+                break;
+            }
+            LoadGallery();
+        }
     }
 }
