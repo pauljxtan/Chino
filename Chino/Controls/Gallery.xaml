@@ -54,7 +54,7 @@
                     <TextBlock Grid.Column="1" TextWrapping="Wrap" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Drop tags below to create galleries!" />
                 </Grid>
                 <ScrollViewer Grid.Row="2" Margin="5,5,5,5"
-                          HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                          HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <materialDesign:ColorZone Mode="PrimaryLight"
                                               DragEnter="selectedTagsZone_DragEnter"
                                               Drop="selectedTagsZone_Drop"
@@ -79,7 +79,7 @@
                 </ScrollViewer>
 
                 <ScrollViewer Grid.Row="3" Margin="5,5,5,5"
-                          HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                          HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding GalleryImages}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -89,10 +89,19 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Image Stretch="Uniform"  Height="200"
-                                       Source="{Binding ImageUri, Mode=OneWay}" />
+                                       Source="{Binding ImageUri, Mode=OneWay}">
+                                    <Image.ToolTip>
+                                        <Image Source="{Binding ImageUri, Mode=OneWay}"
+                                                   RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                                   Width="{Binding Source.PixelWidth, RelativeSource={RelativeSource Self}}"
+                                                   Height="{Binding Source.PixelHeight, RelativeSource={RelativeSource Self}}"
+                                                   MaxHeight="900" />
+                                    </Image.ToolTip>
+                                </Image>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+
                 </ScrollViewer>
                 <materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}" x:Name="MainSnackbar"
                                             Grid.Row="1" />

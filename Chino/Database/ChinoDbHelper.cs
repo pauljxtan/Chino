@@ -12,7 +12,8 @@ namespace Chino.Database
     {
         //private static SqliteHelper _sqliteHelper = new SqliteHelper(Config.DefaultDatabasePath);
         //private static SqliteHelper _sqliteHelper = new SqliteHelper($"{Directory.GetCurrentDirectory()}\\chino.sqlite");
-        private static SqliteHelper _sqliteHelper = new SqliteHelper($"{AppDomain.CurrentDomain.BaseDirectory}\\chino.sqlite");
+        //private static SqliteHelper _sqliteHelper = new SqliteHelper($"{AppDomain.CurrentDomain.BaseDirectory}\\chino.sqlite");
+        private static SqliteHelper _sqliteHelper = new SqliteHelper(@"C:\data\chino\chino.sqlite");
 
         #region Gets
 

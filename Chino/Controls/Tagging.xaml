@@ -83,14 +83,14 @@
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Margin="5,5,0,0" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <materialDesign:PackIcon Grid.Column="0" Margin="0,0,2,0" Kind="Information" />
-                    <TextBlock Grid.Column="1" TextWrapping="Wrap" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Drop tags below to add them to the selected image." />
-                </Grid>
+                                    <Grid Grid.Row="0" Margin="5,5,0,0" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <materialDesign:PackIcon Grid.Column="0" Margin="0,0,2,0" Kind="Information" />
+                                        <TextBlock Grid.Column="1" TextWrapping="Wrap" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Drop tags below to add them to the selected image." />
+                                    </Grid>
                                     <!-- TODO: change this to ItemsControl -->
                                     <DataGrid Grid.Row="1" x:Name="fileTagDataGrid" AutoGenerateColumns="False" IsReadOnly="True" FontSize="16"
                                                   ItemsSource="{Binding SelectedFileTags}"
@@ -114,7 +114,16 @@
                                 </Grid>
 
                                 <Grid Grid.Column="1">
-                                    <Image Grid.Row="0" Stretch="Uniform" Source="{Binding SelectedFileUri, Mode=OneWay}" />
+                                    <Image Grid.Row="0" Stretch="Uniform" Source="{Binding SelectedFileUri, Mode=OneWay}"
+                                           RenderOptions.BitmapScalingMode="NearestNeighbor">
+                                        <Image.ToolTip>
+                                            <Image Source="{Binding SelectedFileUri, Mode=OneWay}"
+                                                   RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                                   Width="{Binding Source.PixelWidth, RelativeSource={RelativeSource Self}}"
+                                                   Height="{Binding Source.PixelHeight, RelativeSource={RelativeSource Self}}"
+                                                   MaxHeight="900" />
+                                        </Image.ToolTip>
+                                    </Image>
                                 </Grid>
                             </Grid>
                         </Grid>

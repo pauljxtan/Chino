@@ -102,7 +102,7 @@
                             </Grid>
                             
                             <ScrollViewer Grid.Row="3" Margin="5,5,5,5"
-                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                                  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding AvailableTags}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
