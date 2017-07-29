@@ -63,14 +63,10 @@ namespace Chino.Model
             Message = message;
         }
 
+        // TODO: Move this into ChinoRepository class
         public static void LogToDb(DateTime dateTime, LogLevel logLevel, LogEvent logEvent, string message = "")
         {
             ChinoDbHelper.InsertLog(dateTime, logLevel, logEvent, message);
-        }
-
-        public static List<Log> GetLogsForDate(DateTime dateTime)
-        {
-            return ChinoDbHelper.GetLogsForDate(dateTime);
         }
     }
 }

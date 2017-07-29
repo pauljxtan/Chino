@@ -136,11 +136,11 @@
                             <controls:Gallery />
                         </TabItem>
 
-                        <TabItem Header="Database">
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
+                        <TabItem Header="Logs">
+                            <controls:Logs />
                         </TabItem>
 
-                        <TabItem Header="Logs">
+                        <TabItem Header="Database">
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">COMING SOON</TextBlock>
                         </TabItem>
 

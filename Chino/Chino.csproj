@@ -137,6 +137,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Config.cs" />
+    <Compile Include="Controls\Logs.xaml.cs">
+      <DependentUpon>Logs.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Gallery.xaml.cs">
       <DependentUpon>Gallery.xaml</DependentUpon>
     </Compile>
@@ -156,10 +159,15 @@
     <Compile Include="Model\Util\FileInfo1.cs" />
     <Compile Include="Model\Util\ImageInfo.cs" />
     <Compile Include="Model\Util\TagInfo.cs" />
+    <Compile Include="ViewModel\LogsViewModel.cs" />
     <Compile Include="ViewModel\GalleryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\TaggingViewModel.cs" />
     <Compile Include="ViewModel\Util.cs" />
+    <Page Include="Controls\Logs.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\Gallery.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -95,6 +95,11 @@ namespace Chino.Model
             return ChinoDbHelper.GetImagesByTag(tagName);
         }
 
+        public static List<Log> GetLogsForDate(DateTime dateTime)
+        {
+            return ChinoDbHelper.GetLogsForDate(dateTime);
+        }
+
         //public static List<Image> ImageRepo;
         //public static List<Tag> TagRepo;
         //public static List<Tuple<Image, Tag>> ImageTagRepo;

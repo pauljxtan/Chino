@@ -10,10 +10,9 @@ namespace Chino.Database
 {
     public static class ChinoDbHelper
     {
-        //private static SqliteHelper _sqliteHelper = new SqliteHelper(Config.DefaultDatabasePath);
+        private static SqliteHelper _sqliteHelper = new SqliteHelper(Config.DefaultDatabasePath);
         //private static SqliteHelper _sqliteHelper = new SqliteHelper($"{Directory.GetCurrentDirectory()}\\chino.sqlite");
         //private static SqliteHelper _sqliteHelper = new SqliteHelper($"{AppDomain.CurrentDomain.BaseDirectory}\\chino.sqlite");
-        private static SqliteHelper _sqliteHelper = new SqliteHelper(@"C:\data\chino\chino.sqlite");
 
         #region Gets
 
@@ -70,7 +69,7 @@ namespace Chino.Database
         public static List<Log> GetLogsForDate(DateTime dateTime)
         {
             var logs = new List<Log>();
-            var sql = $"SELECT datetime, log_level, log_event, message FROM logs WHERE date(datetime) = {dateTime.ToString("yyyy-MM-dd")};";
+            var sql = $"SELECT datetime, log_level, log_event, message FROM logs WHERE date(datetime) = '{dateTime.ToString("yyyy-MM-dd")}';";
 
             using (SQLiteDataReader reader = _sqliteHelper.ExecuteQuery(sql))
             {
@@ -191,11 +190,11 @@ namespace Chino.Database
             bool success = _sqliteHelper.ExecuteNonQuery(sql);
             if (success)
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Info, LogEvent.ImageInserted, $"Inserted image: {imageName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Info, LogEvent.ImageInserted, $"Inserted image: {imageName}");
             }
             else
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Error, LogEvent.ImageInsertFailed, $"Failed to insert image: {imageName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Error, LogEvent.ImageInsertFailed, $"Failed to insert image: {imageName}");
             }
             return success;
         }
@@ -209,11 +208,11 @@ namespace Chino.Database
             bool success = _sqliteHelper.ExecuteNonQuery(sql);
             if (success)
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Info, LogEvent.TagInserted, $"Inserted tag: {tagName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Info, LogEvent.TagInserted, $"Inserted tag: {tagName}");
             }
             else
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Error, LogEvent.TagInsertFailed, $"Failed to insert tag: {tagName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Error, LogEvent.TagInsertFailed, $"Failed to insert tag: {tagName}");
             }
             return success;
         }
@@ -225,11 +224,11 @@ namespace Chino.Database
             bool success = _sqliteHelper.ExecuteNonQuery(sql);
             if (success)
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Info, LogEvent.ImageTagRelationInserted, $"Inserted image-tag relation: {imageName}, {tagName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Info, LogEvent.ImageTagRelationInserted, $"Inserted image-tag relation: {imageName}, {tagName}");
             }
             else
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Error, LogEvent.ImageTagRelationInsertFailed, $"Failed to insert image-tag relation: {imageName}, {tagName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Error, LogEvent.ImageTagRelationInsertFailed, $"Failed to insert image-tag relation: {imageName}, {tagName}");
             }
             return success;
         }
@@ -259,11 +258,11 @@ namespace Chino.Database
             bool success = _sqliteHelper.ExecuteNonQuery(sql);
             if (success)
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Info, LogEvent.ImageDeleted, $"Deleted image: {imageName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Info, LogEvent.ImageDeleted, $"Deleted image: {imageName}");
             }
             else
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Error, LogEvent.ImageDeleteFailed, $"Failed to delete image: {imageName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Error, LogEvent.ImageDeleteFailed, $"Failed to delete image: {imageName}");
             }
             return success;
         }
@@ -277,11 +276,11 @@ namespace Chino.Database
             bool success = _sqliteHelper.ExecuteNonQuery(sql);
             if (success)
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Info, LogEvent.TagDeleted, $"Deleted tag: {tagName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Info, LogEvent.TagDeleted, $"Deleted tag: {tagName}");
             }
             else
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Error, LogEvent.TagDeleteFailed, $"Failed to delete tag: {tagName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Error, LogEvent.TagDeleteFailed, $"Failed to delete tag: {tagName}");
             }
             return success;
         }
@@ -293,11 +292,11 @@ namespace Chino.Database
             bool success = _sqliteHelper.ExecuteNonQuery(sql);
             if (success)
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Info, LogEvent.ImageTagRelationDeleted, $"Deleted image-tag relation: {imageName}, {tagName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Info, LogEvent.ImageTagRelationDeleted, $"Deleted image-tag relation: {imageName}, {tagName}");
             }
             else
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Error, LogEvent.ImageTagRelationDeleteFailed, $"Failed to delete image-tag relation: {imageName}, {tagName}");
+                Log.LogToDb(DateTime.Now, LogLevel.Error, LogEvent.ImageTagRelationDeleteFailed, $"Failed to delete image-tag relation: {imageName}, {tagName}");
             }
             return success;
         }
@@ -310,11 +309,11 @@ namespace Chino.Database
             bool success = _sqliteHelper.ExecuteNonQuery(sql);
             if (success)
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Info, LogEvent.LogsDeleted, "Deleted all logs");
+                Log.LogToDb(DateTime.Now, LogLevel.Info, LogEvent.LogsDeleted, "Deleted all logs");
             }
             else
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Error, LogEvent.LogsDeleteFailed, "Failed to delete all logs");
+                Log.LogToDb(DateTime.Now, LogLevel.Error, LogEvent.LogsDeleteFailed, "Failed to delete all logs");
             }
             return success;
         }
@@ -326,11 +325,11 @@ namespace Chino.Database
             bool success = _sqliteHelper.ExecuteNonQuery(sql);
             if (success)
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Info, LogEvent.LogsDeleted, $"Deleted logs for {dateTime.ToString("yyyy-MM-dd")}");
+                Log.LogToDb(DateTime.Now, LogLevel.Info, LogEvent.LogsDeleted, $"Deleted logs for {dateTime.ToString("yyyy-MM-dd")}");
             }
             else
             {
-                Log.LogToDb(DateTime.UtcNow, LogLevel.Error, LogEvent.LogsDeleteFailed, $"Failed to delete logs for {dateTime.ToString("yyyy-MM-dd")}");
+                Log.LogToDb(DateTime.Now, LogLevel.Error, LogEvent.LogsDeleteFailed, $"Failed to delete logs for {dateTime.ToString("yyyy-MM-dd")}");
             }
             return success;
         }
