@@ -41,7 +41,7 @@ namespace Chino.ViewModel
         public MainViewModel()
         {
             AddNewTagCommand = new RelayCommand(AddNewTag);
-            SelectedTagFilter = "a";
+            SelectedTagFilter = "*";
         }
 
         public RelayCommand AddNewTagCommand { get; }
@@ -60,7 +60,14 @@ namespace Chino.ViewModel
                 ChinoRepository.AddTag("mollusc_abode");
                 SelectedTagFilter = "m";
             }
-            AvailableTags = new ObservableCollection<TagInfo>(ChinoRepository.GetAllTags()
+            var allTags = ChinoRepository.GetAllTags().OrderBy(t => t.Name);
+            if (SelectedTagFilter == "*")
+            {
+                AvailableTags = new ObservableCollection<TagInfo>(allTags
+                    .Select(t => new TagInfo(t.Name, ChinoRepository.GetImagesByTag(t.Name).Count)));
+                return;
+            }
+            AvailableTags = new ObservableCollection<TagInfo>(allTags
                 .Where(t => t.Name.StartsWith(SelectedTagFilter))
                 .Select(t => new TagInfo(t.Name, ChinoRepository.GetImagesByTag(t.Name).Count)));
         }

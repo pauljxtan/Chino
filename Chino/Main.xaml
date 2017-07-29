@@ -85,6 +85,7 @@
                                 <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">x</Button>
                                 <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">y</Button>
                                 <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">z</Button>
+                                <Button Height="24" Width="32" Padding="1,1,1,1" Click="OnTagFilterClick">*</Button>
                             </WrapPanel>
 
                             <Grid Grid.Row="2" Margin="0,5,5,0">
